@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platon.browser.dao.custommapper.CustomTxBakMapper">
+  <insert id="batchInsertOrUpdateSelective" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+    replace into tx_bak (
+        `hash`,`tx_type`,`num`,`info`,`from_address`,`to_address`,`contract_address`
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      #{item.hash,jdbcType=VARCHAR},
+      #{item.type},
+      #{item.num,jdbcType=BIGINT},
+      #{item.info,jdbcType=LONGVARCHAR},
+      #{item.from},
+      #{item.to},
+      #{item.contractAddress}
+      )
+    </foreach>
+  </insert>
+</mapper>

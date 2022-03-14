@@ -3,13 +3,7 @@ package com.platon.browser.v0152.contract;
 
 import com.platon.abi.solidity.EventEncoder;
 import com.platon.abi.solidity.TypeReference;
-import com.platon.abi.solidity.datatypes.Address;
-import com.platon.abi.solidity.datatypes.Bool;
-import com.platon.abi.solidity.datatypes.DynamicArray;
-import com.platon.abi.solidity.datatypes.Event;
-import com.platon.abi.solidity.datatypes.Function;
-import com.platon.abi.solidity.datatypes.Type;
-import com.platon.abi.solidity.datatypes.Utf8String;
+import com.platon.abi.solidity.datatypes.*;
 import com.platon.abi.solidity.datatypes.generated.Uint256;
 import com.platon.abi.solidity.datatypes.generated.Uint8;
 import com.platon.crypto.Credentials;
@@ -22,14 +16,13 @@ import com.platon.protocol.core.methods.response.TransactionReceipt;
 import com.platon.tx.Contract;
 import com.platon.tx.TransactionManager;
 import com.platon.tx.gas.GasProvider;
+import rx.Observable;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * <p>Auto generated code.
@@ -109,8 +102,8 @@ public class Erc1155Contract extends Contract implements ErcContract {
     @Override
     public RemoteCall<BigInteger> balanceOf(String _owner, BigInteger _id) {
         final Function function = new Function(FUNC_BALANCEOF,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.Address(_owner),
-                        new com.platon.abi.solidity.datatypes.generated.Uint256(_id)),
+                Arrays.<Type>asList(new Address(_owner),
+                        new Uint256(_id)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
@@ -126,7 +119,7 @@ public class Erc1155Contract extends Contract implements ErcContract {
 
     public RemoteCall<String> uri(BigInteger _id) {
         final Function function = new Function(FUNC_URI,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.generated.Uint256(_id)),
+                Arrays.<Type>asList(new Uint256(_id)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
@@ -135,14 +128,14 @@ public class Erc1155Contract extends Contract implements ErcContract {
     public RemoteCall<TransactionReceipt> safeBatchTransferFrom(String _from, String _to, List<BigInteger> _ids, List<BigInteger> _values, byte[] _data) {
         final Function function = new Function(
                 FUNC_SAFEBATCHTRANSFERFROM,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.Address(_from),
-                        new com.platon.abi.solidity.datatypes.Address(_to),
-                        new com.platon.abi.solidity.datatypes.DynamicArray<>(
-                                com.platon.abi.solidity.datatypes.generated.Uint256.class,
-                                com.platon.abi.solidity.Utils.typeMap(_ids, com.platon.abi.solidity.datatypes.generated.Uint256.class)),
-                        new com.platon.abi.solidity.datatypes.DynamicArray<>(
-                                com.platon.abi.solidity.datatypes.generated.Uint256.class,
-                                com.platon.abi.solidity.Utils.typeMap(_values, com.platon.abi.solidity.datatypes.generated.Uint256.class)),
+                Arrays.<Type>asList(new Address(_from),
+                        new Address(_to),
+                        new DynamicArray<>(
+                                Uint256.class,
+                                com.platon.abi.solidity.Utils.typeMap(_ids, Uint256.class)),
+                        new DynamicArray<>(
+                                Uint256.class,
+                                com.platon.abi.solidity.Utils.typeMap(_values, Uint256.class)),
                         new com.platon.abi.solidity.datatypes.DynamicBytes(_data)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
@@ -150,12 +143,12 @@ public class Erc1155Contract extends Contract implements ErcContract {
 
     public RemoteCall<List> balanceOfBatch(List<String> _owners, List<BigInteger> _ids) {
         final Function function = new Function(FUNC_BALANCEOFBATCH,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.DynamicArray<>(
-                                com.platon.abi.solidity.datatypes.Address.class,
-                                com.platon.abi.solidity.Utils.typeMap(_owners, com.platon.abi.solidity.datatypes.Address.class)),
-                        new com.platon.abi.solidity.datatypes.DynamicArray<>(
-                                com.platon.abi.solidity.datatypes.generated.Uint256.class,
-                                com.platon.abi.solidity.Utils.typeMap(_ids, com.platon.abi.solidity.datatypes.generated.Uint256.class))),
+                Arrays.<Type>asList(new DynamicArray<>(
+                                Address.class,
+                                com.platon.abi.solidity.Utils.typeMap(_owners, Address.class)),
+                        new DynamicArray<>(
+                                Uint256.class,
+                                com.platon.abi.solidity.Utils.typeMap(_ids, Uint256.class))),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Uint256>>() {
                 }));
         return new RemoteCall<List>(
@@ -168,16 +161,16 @@ public class Erc1155Contract extends Contract implements ErcContract {
     public RemoteCall<TransactionReceipt> setApprovalForAll(String _operator, Boolean _approved) {
         final Function function = new Function(
                 FUNC_SETAPPROVALFORALL,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.Address(_operator),
-                        new com.platon.abi.solidity.datatypes.Bool(_approved)),
+                Arrays.<Type>asList(new Address(_operator),
+                        new Bool(_approved)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Boolean> isApprovedForAll(String _owner, String _operator) {
         final Function function = new Function(FUNC_ISAPPROVEDFORALL,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.Address(_owner),
-                        new com.platon.abi.solidity.datatypes.Address(_operator)),
+                Arrays.<Type>asList(new Address(_owner),
+                        new Address(_operator)),
                 Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
@@ -186,10 +179,10 @@ public class Erc1155Contract extends Contract implements ErcContract {
     public RemoteCall<TransactionReceipt> safeTransferFrom(String _from, String _to, BigInteger _id, BigInteger _value, byte[] _data) {
         final Function function = new Function(
                 FUNC_SAFETRANSFERFROM,
-                Arrays.<Type>asList(new com.platon.abi.solidity.datatypes.Address(_from),
-                        new com.platon.abi.solidity.datatypes.Address(_to),
-                        new com.platon.abi.solidity.datatypes.generated.Uint256(_id),
-                        new com.platon.abi.solidity.datatypes.generated.Uint256(_value),
+                Arrays.<Type>asList(new Address(_from),
+                        new Address(_to),
+                        new Uint256(_id),
+                        new Uint256(_value),
                         new com.platon.abi.solidity.datatypes.DynamicBytes(_data)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
@@ -204,9 +197,9 @@ public class Erc1155Contract extends Contract implements ErcContract {
     }
 
     public List<TransferSingleEventResponse> getTransferSingleEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERSINGLE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERSINGLE_EVENT, transactionReceipt);
         ArrayList<TransferSingleEventResponse> responses = new ArrayList<>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferSingleEventResponse typedResponse = new TransferSingleEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._operator = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -240,9 +233,9 @@ public class Erc1155Contract extends Contract implements ErcContract {
     }
 
     public List<TransferBatchEventResponse> getTransferBatchEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERBATCH_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERBATCH_EVENT, transactionReceipt);
         ArrayList<TransferBatchEventResponse> responses = new ArrayList<>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferBatchEventResponse typedResponse = new TransferBatchEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._operator = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -276,9 +269,9 @@ public class Erc1155Contract extends Contract implements ErcContract {
     }
 
     public List<ApprovalForAllEventResponse> getApprovalForAllEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt);
         ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -308,9 +301,9 @@ public class Erc1155Contract extends Contract implements ErcContract {
     }
 
     public List<URIEventResponse> getURIEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(URI_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(URI_EVENT, transactionReceipt);
         ArrayList<URIEventResponse> responses = new ArrayList<>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             URIEventResponse typedResponse = new URIEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._id = (BigInteger) eventValues.getIndexedValues().get(0).getValue();

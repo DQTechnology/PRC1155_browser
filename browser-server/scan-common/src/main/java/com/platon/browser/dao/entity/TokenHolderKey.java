@@ -2,9 +2,9 @@ package com.platon.browser.dao.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class TokenHolderKey {
-
     private String tokenAddress;
 
     private String address;
@@ -33,6 +33,19 @@ public class TokenHolderKey {
 
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TokenHolderKey that = (TokenHolderKey) o;
+        return tokenAddress.equals(that.tokenAddress) && address.equals(that.address) && tokenId.equals(that.tokenId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tokenAddress, address, tokenId);
     }
 
     /**

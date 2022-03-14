@@ -252,6 +252,7 @@ public class AddressCache {
         address.setTxQty(0);
         address.setErc20TxQty(0);
         address.setErc721TxQty(0);
+        address.setErc1155TxQty(0);
         address.setTransferQty(0);
         address.setStakingQty(0);
         address.setDelegateQty(0);

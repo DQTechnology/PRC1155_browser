@@ -1,14 +1,17 @@
 <template>
-  <component :is="componentName" :tokens-detail="componentData"></component>
+  <component :is="componentName" :tokens-detail="componentData" :address="address"></component>
 </template>
 
 <script>
 import apiService from '@/services/API-services'
 import erc20DetailComponent from '@/views/tokens/detail/erc20-detail.vue'
 import erc721DetailComponent from '@/views/tokens/detail/erc721-detail.vue'
-import erc1155DetailComponent from '@/views/tokens/detail/erc1155-detail.vue'
 import erc721IdDetailComponent from '@/views/tokens/detail/erc721id-detail.vue'
+
+import erc1155DetailComponent from '@/views/tokens/detail/erc1155-detail.vue'
+
 import erc1155IdDetailComponent from '@/views/tokens/detail/erc1155id-detail.vue'
+import AdrTrans from '@/mixins/adrTrans'
 const componentMap = {
   erc20: 'erc20DetailComponent',
   erc721: 'erc721DetailComponent',
@@ -17,9 +20,11 @@ const componentMap = {
   erc1155Id: 'erc1155IdDetailComponent'
 }
 export default {
+  mixins: [AdrTrans],
   data() {
     return {
       type: '',
+      address: '',
       componentData: null
     }
   },
@@ -36,7 +41,7 @@ export default {
     erc1155IdDetailComponent
   },
   created() {
-    this.address = this.$route.query.address.toLowerCase()
+    this.checkAdr()
     this.tokenId = this.$route.query.id
     let type = this.$route.query.type
     if (type) {

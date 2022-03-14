@@ -52,7 +52,6 @@ public class ErcTx {
      * 交易哈希
      */
     private String hash;
-
     /**
      * erc1155的操作者
      */
@@ -62,13 +61,14 @@ public class ErcTx {
      * 交易发起者（也是代币扣除方）
      */
     private String from;
-
+    //
     private String to;
 
     /**
      * erc721, erc1155的标识符
      */
     private String tokenId;
+
     /**
      * 交易value
      */

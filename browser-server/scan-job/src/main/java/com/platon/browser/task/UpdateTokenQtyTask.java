@@ -46,9 +46,9 @@ public class UpdateTokenQtyTask {
     @Resource
     private TxErc721BakMapper txErc721BakMapper;
 
+
     @Resource
     private TxErc1155BakMapper txErc1155BakMapper;
-
     /**
      * 更新erc交易数
      * 每5分钟执行一次
@@ -144,9 +144,8 @@ public class UpdateTokenQtyTask {
             } else {
                 TaskUtil.console("当前erc721断点[{}]未找到erc721交易", oldErc721Position);
             }
-
             // 1155
-            PointLog erc1155PointLog = pointLogMapper.selectByPrimaryKey(8);
+            PointLog erc1155PointLog = pointLogMapper.selectByPrimaryKey(9);
             long oldErc1155Position = Convert.toLong(erc1155PointLog.getPosition());
             TaskUtil.console("当前页码为[{}]，erc1155断点为[{}]", pageSize, oldErc1155Position);
             TxErc1155BakExample txErc1155BakExample = new TxErc1155BakExample();
@@ -188,8 +187,6 @@ public class UpdateTokenQtyTask {
             }
 
 
-
-            // 持久化迥异信息
             if (CollUtil.isNotEmpty(tokenMap.values())) {
                 for (Map.Entry<String, TokenQty> entry : tokenMap.entrySet()) {
                     entry.getValue().setTokenTxQty(entry.getValue().getErc20TxQty() + entry.getValue().getErc721TxQty() + entry.getValue().getErc1155TxQty());
@@ -198,29 +195,23 @@ public class UpdateTokenQtyTask {
                 customTokenMapper.batchUpdateTokenQty(list);
                 TaskUtil.console("更新token表的erc交易数，涉及的token数为[{}]，修改数据为{}", list.size(), JSONUtil.toJsonStr(list));
             }
-
             if (CollUtil.isNotEmpty(addressMap.values())) {
                 List<AddressErcQty> list = CollUtil.newArrayList(addressMap.values());
                 customAddressMapper.batchUpdateAddressErcQty(list);
                 TaskUtil.console("更新地址表的erc交易数，涉及的address数为[{}]，修改数据为{}", list.size(), JSONUtil.toJsonStr(list));
             }
-
             if (CollUtil.isNotEmpty(erc20List)) {
                 pointLogMapper.updateByPrimaryKeySelective(erc20PointLog);
                 TaskUtil.console("更新erc交易数，erc20断点为[{}]->[{}]", oldErc20Position, erc20PointLog.getPosition());
             }
-
             if (CollUtil.isNotEmpty(erc721List)) {
                 pointLogMapper.updateByPrimaryKeySelective(erc721PointLog);
                 TaskUtil.console("更新erc交易数，erc721断点为[{}]->[{}]", oldErc721Position, erc721PointLog.getPosition());
             }
-
-
             if (CollUtil.isNotEmpty(erc1155List)) {
                 pointLogMapper.updateByPrimaryKeySelective(erc1155PointLog);
                 TaskUtil.console("更新erc交易数，erc1155断点为[{}]->[{}]", oldErc1155Position, erc1155PointLog.getPosition());
             }
-
 
             XxlJobHelper.handleSuccess("更新erc交易数成功");
         } catch (Exception e) {
@@ -228,8 +219,6 @@ public class UpdateTokenQtyTask {
             throw e;
         }
     }
-
-
 
     /**
      * 获取AddressErcQty

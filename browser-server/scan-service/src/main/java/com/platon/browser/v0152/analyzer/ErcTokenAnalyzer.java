@@ -52,7 +52,7 @@ public class ErcTokenAnalyzer {
     private AddressCache addressCache;
 
     @Resource
-    private Erc721TokenInventoryAnalyzer erc721TokenInventoryAnalyzer;
+    private ErcTokenInventoryAnalyzer ercTokenInventoryAnalyzer;
 
     @Resource
     private Erc1155TokenInventoryAnalyzer erc1155TokenInventoryAnalyzer;
@@ -98,7 +98,6 @@ public class ErcTokenAnalyzer {
                     token.setIsSupportErc721(true);
                     token.setIsSupportErc721Enumeration(ercDetectService.isSupportErc721Enumerable(contractAddress, blockNumber));
                     token.setIsSupportErc721Metadata(ercDetectService.isSupportErc721Metadata(contractAddress, blockNumber));
-                    // 是否支持1155
                     token.setIsSupportErc1155(false);
                     token.setIsSupportErc1155Metadata(token.getIsSupportErc1155());
                     ercCache.erc721AddressCache.add(contractAddress);
@@ -289,27 +288,24 @@ public class ErcTokenAnalyzer {
                         case ERC721:
                             eventList = ercDetectService.getErc721TxEvents(transactionReceipt, BigInteger.valueOf(collectionBlock.getNum()));
                             List<ErcContract.ErcTxEvent> erc721TxEventList = eventList.stream().filter(v -> v.getLog().equals(tokenLog)).collect(Collectors.toList());
-
                             if (erc721TxEventList.size() > 1) {
                                 log.error("当前交易[{}]erc721交易回执日志解析异常{}", tx.getHash(), tokenLog);
                                 break;
                             }
                             txList = resolveErcTxFromEvent(token, tx, erc721TxEventList, collectionBlock.getSeq().incrementAndGet());
                             tx.getErc721TxList().addAll(txList);
-                            erc721TokenInventoryAnalyzer.analyze(tx.getHash(), txList);
+                            ercTokenInventoryAnalyzer.analyze(tx.getHash(), txList, BigInteger.valueOf(collectionBlock.getNum()));
                             break;
                         case ERC1155:
                             eventList = ercDetectService.getErc1155TxEvents(transactionReceipt, BigInteger.valueOf(collectionBlock.getNum()));
                             List<ErcContract.ErcTxEvent> erc1155TxEventList = eventList.stream().filter(v -> v.getLog().equals(tokenLog)).collect(Collectors.toList());
-
                             if (erc1155TxEventList.size() > 1) {
                                 log.error("当前交易[{}]erc1155交易回执日志解析异常{}", tx.getHash(), tokenLog);
                                 break;
                             }
                             txList = resolveErcTxFromEvent(token, tx, erc1155TxEventList, collectionBlock.getSeq().incrementAndGet());
                             tx.getErc1155TxList().addAll(txList);
-                            // 解析库存
-                            erc1155TokenInventoryAnalyzer.analyze(tx.getHash(), txList);
+                            erc1155TokenInventoryAnalyzer.analyze(tx.getHash(), txList, BigInteger.valueOf(collectionBlock.getNum()));
                             break;
                     }
                     token.setUpdateTime(new Date());
@@ -321,9 +317,7 @@ public class ErcTokenAnalyzer {
             });
             tx.setErc20TxInfo(getErcTxInfo(tx.getErc20TxList()));
             tx.setErc721TxInfo(getErcTxInfo(tx.getErc721TxList()));
-            // 1155
             tx.setErc1155TxInfo(getErcTxInfo(tx.getErc1155TxList()));
-
             log.info("当前交易[{}]有[{}]笔log,其中token交易有[{}]笔，其中erc20有[{}]笔,其中erc721有[{}]笔,其中erc1155有[{}]笔",
                     tx.getHash(),
                     CommonUtil.ofNullable(() -> receipt.getLogs().size()).orElse(0),

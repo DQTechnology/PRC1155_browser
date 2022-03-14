@@ -42,7 +42,7 @@ import java.util.List;
 @Service
 public class ErcDetectService {
 
-    public static Credentials CREDENTIALS = null;
+    public static final Credentials CREDENTIALS = Credentials.create("4484092b68df58d639f11d59738983e2b8b81824f3c0c759edd6773f9adadfe7");
 
     private static final BigInteger GAS_LIMIT = BigInteger.valueOf(2104836);
 
@@ -50,10 +50,11 @@ public class ErcDetectService {
 
     public static final GasProvider GAS_PROVIDER = new ContractGasProvider(GAS_PRICE, GAS_LIMIT);
 
-    static {
-        NetworkParameters.selectPlatON();
-        CREDENTIALS = Credentials.create("4484092b68df58d639f11d59738983e2b8b81824f3c0c759edd6773f9adadfe7");
-    }
+//    public static Credentials CREDENTIALS = null;
+//    static {
+//        NetworkParameters.selectPlatON();
+//        CREDENTIALS = Credentials.create("4484092b68df58d639f11d59738983e2b8b81824f3c0c759edd6773f9adadfe7");
+//    }
 
     @Resource
     private PlatOnClient platOnClient;
@@ -278,7 +279,6 @@ public class ErcDetectService {
         return "0x0000000000000000000000000000000000000000000000000000000000000001".equals(result);
     }
 
-
     public Boolean isSupportErc1155Metadata(String contractAddress, BigInteger blockNumber) throws PlatonCallTimeoutException {
         // 支持erc1155，则必定要支持erc165
         if (!isSupportErc165(contractAddress, blockNumber)) {
@@ -288,6 +288,7 @@ public class ErcDetectService {
         String result = detectInputData(contractAddress, "0x01ffc9a70e89341c00000000000000000000000000000000000000000000000000000000", blockNumber);
         return "0x0000000000000000000000000000000000000000000000000000000000000001".equals(result);
     }
+
 
     private ErcContractId getErc20ContractId(String contractAddress) throws PlatonCallTimeoutException {
         ErcContract ercContract = Erc20Contract.load(contractAddress, platOnClient.getWeb3jWrapper().getWeb3j(), CREDENTIALS, GAS_PROVIDER);
@@ -317,14 +318,12 @@ public class ErcDetectService {
         return contractId;
     }
 
-
     private ErcContractId getErc1155ContractId(String contractAddress) throws PlatonCallTimeoutException {
         ErcContract ercContract = Erc721Contract.load(contractAddress, platOnClient.getWeb3jWrapper().getWeb3j(), CREDENTIALS, GAS_PROVIDER);
         ErcContractId contractId = resolveContractId(ercContract);
         contractId.setTypeEnum(ErcTypeEnum.ERC1155);
         return contractId;
     }
-
 
     private ErcContractId getErc1155ContractId(String contractAddress, BigInteger blockNumber) throws PlatonCallTimeoutException {
         ErcContract ercContract = Erc1155Contract.load(contractAddress, platOnClient.getWeb3jWrapper().getWeb3j(), CREDENTIALS, GAS_PROVIDER, blockNumber);
@@ -389,6 +388,7 @@ public class ErcDetectService {
                 return getErc721ContractId(contractAddress);
             }
 
+
             boolean isErc1155 = isSupportErc1155(contractAddress);
             if (isErc1155) {
                 // 取ERC721合约信息
@@ -396,8 +396,7 @@ public class ErcDetectService {
                 return getErc1155ContractId(contractAddress);
             }
 
-
-            // 不是ERC721, ERC1155，则检测是否是ERC20
+            // 不是ERC721，则检测是否是ERC20
             log.info("该合约[{}]不是721合约，开始检测是否是ERC20", contractAddress);
             contractId = getErc20ContractId(contractAddress);
             if (StringUtils.isBlank(contractId.getName()) || StringUtils.isBlank(contractId.getSymbol()) | contractId.getDecimal() == null || contractId.getTotalSupply() == null) {
@@ -435,8 +434,9 @@ public class ErcDetectService {
                 return getErc1155ContractId(contractAddress, blockNumber);
             }
 
-            // 不是ERC721, 1155，则检测是否是ERC20
-            log.info("该合约[{}]不是721, 1155 合约，开始检测是否是ERC20", contractAddress);
+
+            // 不是ERC721，则检测是否是ERC20
+            log.info("该合约[{}]不是721合约，开始检测是否是ERC20", contractAddress);
             contractId = getErc20ContractId(contractAddress, blockNumber);
             if (StringUtils.isBlank(contractId.getName()) || StringUtils.isBlank(contractId.getSymbol()) | contractId.getDecimal() == null || contractId.getTotalSupply() == null) {
                 // name/symbol/decimals/totalSupply 其中之一为空，则判定为未知类型
@@ -468,4 +468,5 @@ public class ErcDetectService {
         ErcContract ercContract = Erc1155Contract.load(receipt.getContractAddress(), platOnClient.getWeb3jWrapper().getWeb3j(), CREDENTIALS, GAS_PROVIDER, blockNumber);
         return ercContract.getTxEvents(receipt);
     }
+
 }

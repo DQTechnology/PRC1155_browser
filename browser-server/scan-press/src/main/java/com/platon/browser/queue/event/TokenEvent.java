@@ -16,5 +16,4 @@ public class TokenEvent implements Event {
 
     private List<ErcTx> erc721TxList = new ArrayList<>();
 
-    private List<ErcTx> erc1155TxList = new ArrayList<>();
 }

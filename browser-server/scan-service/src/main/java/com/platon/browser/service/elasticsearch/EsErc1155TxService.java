@@ -30,9 +30,13 @@ public class EsErc1155TxService implements EsService<ErcTx> {
             if (recordSet.isEmpty()) return;
             // key: _doc id
             Map<String, ErcTx> txMap = new HashMap<>();
-            recordSet.forEach(t-> txMap.put(generateUniqueDocId(t.getHash(), t.getFrom(), t.getTo(), t.getSeq()), t));
+            recordSet.forEach(t -> txMap.put(
+                    generateUniqueDocId(t.getHash(),
+                            t.getFrom(),
+                            t.getTo(),
+                            t.getSeq()), t));
             esErc1155TxRepository.bulkAddOrUpdate(txMap);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Batch save data of ESTokenTransferRecord exception", e);
             throw new BusinessException(e.getMessage());
         }

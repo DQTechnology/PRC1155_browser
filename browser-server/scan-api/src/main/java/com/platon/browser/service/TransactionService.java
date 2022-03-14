@@ -1,5 +1,6 @@
 package com.platon.browser.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -88,7 +89,7 @@ public class TransactionService {
     private ProposalMapper proposalMapper;
 
     @Resource
-    private Token721InventoryMapper token721InventoryMapper;
+    private TokenInventoryMapper token721InventoryMapper;
 
     @Resource
     private Token1155InventoryMapper token1155InventoryMapper;
@@ -233,7 +234,7 @@ public class TransactionService {
         ESResult<Transaction> items = new ESResult<>();
         constructor.setDesc("seq");
         constructor.setUnmappedType("long");
-        constructor.setResult(new String[]{"hash", "time", "status", "from", "to", "value", "num", "type", "toType", "cost"});
+        constructor.setResult(new String[]{"hash", "time", "status", "from", "to", "tokenId", "value", "num", "type", "toType", "cost"});
         try {
             items = this.ESTransactionRepository.search(constructor, Transaction.class, 1, 30000);
         } catch (Exception e) {
@@ -766,7 +767,11 @@ public class TransactionService {
                         List<Arc721Param> arc721Params = new ArrayList<>();
                         erc721List.forEach(erc721 -> {
                             // 精度转换
-                            int decimal = Integer.parseInt(String.valueOf(erc721.getDecimal()));
+
+                            int decimal = 0;
+                            if (erc721.getDecimal() != null) {
+                                decimal = Integer.parseInt(String.valueOf(erc721.getDecimal()));
+                            }
                             BigDecimal afterConverValue = ConvertUtil.convertByFactor(new BigDecimal(erc721.getValue()), decimal);
                             Arc721Param arc721Param = Arc721Param.builder()
                                     .innerContractAddr(erc721.getContract())
@@ -781,11 +786,11 @@ public class TransactionService {
                                     .innerValue(afterConverValue.toString())
                                     .build();
                             //查询对应的图片进行回填
-                            Token721InventoryKey tokenInventoryKey = new Token721InventoryKey();
-                            tokenInventoryKey.setTokenAddress(erc721.getContract());
-                            tokenInventoryKey.setTokenId(erc721.getTokenId());
-                            Token721Inventory tokenInventory = token721InventoryMapper.selectByPrimaryKey(tokenInventoryKey);
-                            if (tokenInventory != null) {
+                            TokenInventoryExample example = new TokenInventoryExample();
+                            example.createCriteria().andTokenAddressEqualTo(erc721.getContract()).andTokenIdEqualTo(erc721.getValue());
+                            List<TokenInventoryWithBLOBs> tokenInventoryWithBLOBs = token721InventoryMapper.selectByExampleWithBLOBs(example);
+                            if (CollUtil.isNotEmpty(tokenInventoryWithBLOBs)) {
+                                TokenInventoryWithBLOBs tokenInventory = tokenInventoryWithBLOBs.get(0);
                                 // 默认取中等缩略图
                                 String image = "";
                                 if (StrUtil.isNotEmpty(tokenInventory.getMediumImage())) {
@@ -805,7 +810,10 @@ public class TransactionService {
                         List<Arc1155Param> arc1155Params = new ArrayList<>();
                         erc1155List.forEach(erc1155 -> {
                             // 精度转换
-                            int decimal = Integer.parseInt(String.valueOf(erc1155.getDecimal()));
+                            int decimal = 0;
+                            if (erc1155.getDecimal() != null) {
+                                decimal = Integer.parseInt(String.valueOf(erc1155.getDecimal()));
+                            }
                             BigDecimal afterConverValue = ConvertUtil.convertByFactor(new BigDecimal(erc1155.getValue()), decimal);
                             Arc1155Param arc1155Param = Arc1155Param.builder()
                                     .innerContractAddr(erc1155.getContract())
@@ -815,6 +823,7 @@ public class TransactionService {
                                     .fromType(erc1155.getFromType())
                                     .innerSymbol(erc1155.getSymbol())
                                     .innerTo(erc1155.getTo())
+                                    .innerValue(erc1155.getValue())
                                     .toType(erc1155.getToType())
                                     .tokenId(erc1155.getTokenId())
                                     .innerValue(afterConverValue.toString())
@@ -839,7 +848,6 @@ public class TransactionService {
                         });
                         resp.setErc1155Params(arc1155Params);
                     }
-
                     resp.setTxInfo(transaction.getInput());
                     break;
             }

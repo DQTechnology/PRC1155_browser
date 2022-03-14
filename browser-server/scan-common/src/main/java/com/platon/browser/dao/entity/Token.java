@@ -131,7 +131,6 @@ public class Token {
         this.isSupportErc721Metadata = isSupportErc721Metadata;
     }
 
-
     public Boolean getIsSupportErc1155() {
         return isSupportErc1155;
     }
@@ -216,10 +215,8 @@ public class Token {
         isSupportErc721("is_support_erc721", "isSupportErc721", "BIT", false),
         isSupportErc721Enumeration("is_support_erc721_enumeration", "isSupportErc721Enumeration", "BIT", false),
         isSupportErc721Metadata("is_support_erc721_metadata", "isSupportErc721Metadata", "BIT", false),
-
         isSupportErc1155("is_support_erc1155", "isSupportErc1155", "BIT", false),
         isSupportErc1155Metadata("is_support_erc1155_metadata", "isSupportErc1155Metadata", "BIT", false),
-
         createTime("create_time", "createTime", "TIMESTAMP", false),
         updateTime("update_time", "updateTime", "TIMESTAMP", false),
         tokenTxQty("token_tx_qty", "tokenTxQty", "INTEGER", false),
@@ -368,7 +365,7 @@ public class Token {
          * @mbg.generated
          * @project https://github.com/itfsw/mybatis-generator-plugin
          */
-        public static Column[] excludes(Column... excludes) {
+        public static Column[] excludes(Column ... excludes) {
             ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
             if (excludes != null && excludes.length > 0) {
                 columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));

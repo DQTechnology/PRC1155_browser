@@ -74,10 +74,10 @@ public class PersistenceEventHandler implements EventHandler<PersistenceEvent> {
     private void exec(PersistenceEvent event, long sequence, boolean endOfBatch) throws Exception {
         try {
             log.info("当前区块[{}]有[{}]笔交易,有[{}]笔节点操作,有[{}]笔委托奖励",
-                    event.getBlock().getNum(),
-                    CommonUtil.ofNullable(() -> event.getTransactions().size()).orElse(0),
-                    CommonUtil.ofNullable(() -> event.getNodeOpts().size()).orElse(0),
-                    CommonUtil.ofNullable(() -> event.getDelegationRewards().size()).orElse(0));
+                     event.getBlock().getNum(),
+                     CommonUtil.ofNullable(() -> event.getTransactions().size()).orElse(0),
+                     CommonUtil.ofNullable(() -> event.getNodeOpts().size()).orElse(0),
+                     CommonUtil.ofNullable(() -> event.getDelegationRewards().size()).orElse(0));
             blockStage.add(event.getBlock());
             transactionStage.addAll(event.getTransactions());
             delegationRewardStage.addAll(event.getDelegationRewards());

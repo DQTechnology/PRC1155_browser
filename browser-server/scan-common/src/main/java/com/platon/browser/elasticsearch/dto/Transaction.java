@@ -318,7 +318,6 @@ public class Transaction {
         WASM_CONTRACT(4, "WASM合约"),
         ERC20_CONTRACT(5, "ERC20-EVM合约"),
         ERC721_CONTRACT(6, "ERC721-EVM合约"),
-        // 1155合约
         ERC1155_CONTRACT(7, "ERC1155-EVM合约");
 
         private int code;

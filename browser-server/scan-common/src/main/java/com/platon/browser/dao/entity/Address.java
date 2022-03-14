@@ -307,10 +307,8 @@ public class Address {
         createTime("create_time", "createTime", "TIMESTAMP", false),
         updateTime("update_time", "updateTime", "TIMESTAMP", false),
         haveReward("have_reward", "haveReward", "DECIMAL", false),
-
         erc1155TxQty("erc1155_tx_qty", "erc1155TxQty", "INTEGER", false),
         erc721TxQty("erc721_tx_qty", "erc721TxQty", "INTEGER", false),
-
         erc20TxQty("erc20_tx_qty", "erc20TxQty", "INTEGER", false),
         contractBin("contract_bin", "contractBin", "LONGVARCHAR", false);
 

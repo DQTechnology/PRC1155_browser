@@ -5,10 +5,8 @@ import com.platon.browser.dao.entity.Token;
 import com.platon.browser.dao.mapper.TokenMapper;
 import com.platon.browser.elasticsearch.dto.ErcTx;
 import com.platon.browser.queue.event.TokenEvent;
-import com.platon.browser.service.elasticsearch.EsERC1155Service;
 import com.platon.browser.service.elasticsearch.EsERC20Service;
 import com.platon.browser.service.elasticsearch.EsERC721Service;
-import com.platon.browser.service.redis.RedisErc1155TxService;
 import com.platon.browser.service.redis.RedisErc20TxService;
 import com.platon.browser.service.redis.RedisErc721TxService;
 import lombok.Getter;
@@ -44,16 +42,10 @@ public class TokenHandler extends AbstractHandler<TokenEvent> {
     private EsERC721Service esERC721Service;
 
     @Autowired
-    private EsERC1155Service esERC1155Service;
-
-    @Autowired
     private RedisErc20TxService redisErc20TxService;
 
     @Autowired
     private RedisErc721TxService redisErc721TxService;
-
-    @Autowired
-    private RedisErc1155TxService redisErc1155TxService;
 
     @Setter
     @Getter
@@ -65,8 +57,6 @@ public class TokenHandler extends AbstractHandler<TokenEvent> {
     StageCache<ErcTx> erc20Stage = new StageCache<>();
 
     StageCache<ErcTx> erc721Stage = new StageCache<>();
-
-    StageCache<ErcTx> erc1155Stage = new StageCache<>();
 
     @PostConstruct
     private void init() {
@@ -81,17 +71,13 @@ public class TokenHandler extends AbstractHandler<TokenEvent> {
             stage.addAll(event.getTokenList());
             erc20Stage.getData().addAll(event.getErc20TxList());
             erc721Stage.getData().addAll(event.getErc721TxList());
-            erc1155Stage.getData().addAll(event.getErc1155TxList());
             if (stage.size() < batchSize)
                 return;
             tokenMapper.batchInsert(ListUtil.list(true, stage));
             esERC20Service.save(erc20Stage);
             esERC721Service.save(erc721Stage);
-            esERC1155Service.save(erc1155Stage);
-
             redisErc20TxService.save(erc20Stage.getData(), false);
             redisErc721TxService.save(erc721Stage.getData(), false);
-            redisErc1155TxService.save(erc1155Stage.getData(), false);
             long endTime = System.currentTimeMillis();
             printTps("token", stage.size(), startTime, endTime);
             stage.clear();

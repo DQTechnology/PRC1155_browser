@@ -83,6 +83,7 @@
             </div>
           </template>
         </el-table-column>
+
         <template v-if="tableType === 'erc20'">
           <!-- 转账金额(Quantity) -->
           <el-table-column :label="$t('tokens.quantity')">
@@ -91,6 +92,7 @@
             </template>
           </el-table-column>
         </template>
+
         <template v-else-if="tableType === 'erc721'">
           <!-- 令牌ID -->
           <el-table-column :label="$t('tokens.tokenID')" min-width="120">
@@ -105,7 +107,8 @@
             </template>
           </el-table-column>
         </template>
-        <template v-else-if="tableType === 'erc1155'">
+
+        <template v-else-if="tableType === 'erc1155Id'">
           <!-- 令牌ID -->
           <el-table-column :label="$t('tokens.tokenID')" min-width="120">
             <template slot-scope="scope">
@@ -135,7 +138,7 @@
         >
           <template slot-scope="scope">
             <span class="ellipsis ellipsisWidth" :title="scope.row.tokenId">
-              {{ scope.row.tokenId | sliceStr(16) }}
+             {{ scope.row.tokenId | sliceStr(16) }}
             </span>
           </template>
         </el-table-column>

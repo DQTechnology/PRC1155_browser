@@ -1,5 +1,6 @@
 package com.platon.browser.service.redis;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.platon.browser.dao.entity.NetworkStat;
 import com.platon.browser.elasticsearch.dto.Block;
@@ -50,6 +51,7 @@ public class RedisImportService {
     @Resource
     private RedisErc1155TxService redisErc1155TxService;
 
+
     private static final int SERVICE_COUNT = 6;
 
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(SERVICE_COUNT);
@@ -96,7 +98,31 @@ public class RedisImportService {
             submit(redisErc20TxService, erc20TxList, false, latch, RedisKeyEnum.Erc20Tx, CommonUtil.getTraceId());
             submit(redisErc721TxService, erc721TxList, false, latch, RedisKeyEnum.Erc721Tx, CommonUtil.getTraceId());
             submit(redisErc1155TxService, erc1155TxList, false, latch, RedisKeyEnum.Erc1155Tx, CommonUtil.getTraceId());
+            latch.await();
+            if (isRetry.get()) {
+                LongSummaryStatistics blockSum = blocks.stream().collect(Collectors.summarizingLong(Block::getNum));
+                throw new Exception(StrUtil.format("redis相关区块[{}]-[{}]信息批量入库异常，重试[{}]次", blockSum.getMin(), blockSum.getMax(), retryCount.incrementAndGet()));
+            } else {
+                retryCount.set(0);
+            }
+            log.debug("处理耗时:{} ms", System.currentTimeMillis() - startTime);
+        } catch (Exception e) {
+            log.error("redis批量入库异常", e);
+            throw e;
+        }
+    }
 
+    @Retryable(value = Exception.class, maxAttempts = Integer.MAX_VALUE)
+    public void batchImport(Set<Block> blocks, Set<Transaction> transactions, Set<ErcTx> erc20TxList, Set<ErcTx> erc721TxList, Set<ErcTx> erc1155TxList) throws Exception {
+        log.debug("Redis批量导入:{}(blocks({}),transactions({})", Thread.currentThread().getStackTrace()[1].getMethodName(), blocks.size(), transactions.size());
+        long startTime = System.currentTimeMillis();
+        try {
+            CountDownLatch latch = new CountDownLatch(5);
+            submit(redisBlockService, blocks, false, latch, RedisKeyEnum.Block, CommonUtil.getTraceId());
+            submit(redisTransactionService, transactions, false, latch, RedisKeyEnum.Transaction, CommonUtil.getTraceId());
+            submit(redisErc20TxService, erc20TxList, false, latch, RedisKeyEnum.Erc20Tx, CommonUtil.getTraceId());
+            submit(redisErc721TxService, erc721TxList, false, latch, RedisKeyEnum.Erc721Tx, CommonUtil.getTraceId());
+            submit(redisErc1155TxService, erc1155TxList, false, latch, RedisKeyEnum.Erc1155Tx, CommonUtil.getTraceId());
             latch.await();
             if (isRetry.get()) {
                 LongSummaryStatistics blockSum = blocks.stream().collect(Collectors.summarizingLong(Block::getNum));
@@ -138,7 +164,6 @@ public class RedisImportService {
         }
         return result;
     }
-
     /**
      * 取erc1155交易列表
      */
@@ -163,8 +188,12 @@ public class RedisImportService {
     private <T> void statisticsLog(Set<T> data, RedisKeyEnum redisKeyEnum) {
         try {
             if (redisKeyEnum.compareTo(RedisKeyEnum.Block) == 0) {
-                LongSummaryStatistics blockSum = ((Set<Block>) data).stream().collect(Collectors.summarizingLong(Block::getNum));
-                log.info("redis批量入库成功统计:区块[{}]-[{}]", blockSum.getMin(), blockSum.getMax());
+                if (CollUtil.isNotEmpty(data)) {
+                    LongSummaryStatistics blockSum = ((Set<Block>) data).stream().collect(Collectors.summarizingLong(Block::getNum));
+                    log.info("redis批量入库成功统计:区块[{}]-[{}]", blockSum.getMin(), blockSum.getMax());
+                } else {
+                    log.info("redis批量入库成功统计:区块[{}]-[{}]", 0, 0);
+                }
             } else if (redisKeyEnum.compareTo(RedisKeyEnum.Transaction) == 0) {
                 log.info("redis批量入库成功统计:交易数[{}]", data.size());
             } else if (redisKeyEnum.compareTo(RedisKeyEnum.Erc20Tx) == 0) {

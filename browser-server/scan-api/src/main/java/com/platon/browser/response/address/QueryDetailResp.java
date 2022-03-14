@@ -37,18 +37,18 @@ public class QueryDetailResp {
     private Integer erc20TxQty; // token erc20交易总数
 
     /**
-     * 是否是erc721
-     */
-    private boolean hasErc721 = false;
-
-    private Integer erc721TxQty; // token erc 721交易总数
-
-    /**
      * 是否是erc1155
      */
     private boolean hasErc1155 = false;
 
     private Integer erc1155TxQty; // token erc 1155交易总数
+
+    /**
+     * 是否是erc721
+     */
+    private boolean hasErc721 = false;
+
+    private Integer erc721TxQty; // token erc 721交易总数
 
     private Integer transferQty;         //转账交易总数
 

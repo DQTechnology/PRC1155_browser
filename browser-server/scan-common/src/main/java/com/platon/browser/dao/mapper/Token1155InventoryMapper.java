@@ -1,9 +1,7 @@
 package com.platon.browser.dao.mapper;
 
 import com.github.pagehelper.Page;
-import com.platon.browser.dao.entity.Token1155Inventory;
-import com.platon.browser.dao.entity.TokenInventoryExample;
-import com.platon.browser.dao.entity.Token1155InventoryKey;
+import com.platon.browser.dao.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,13 +17,15 @@ public interface Token1155InventoryMapper {
 
     int insertSelective(Token1155Inventory record);
 
-    Page<Token1155Inventory> selectByExample(TokenInventoryExample example);
+    Page<Token1155InventoryWithBLOBs> selectByExampleWithBLOBs(Token1155InventoryExample example);
+
+    Page<Token1155Inventory> selectByExample(Token1155InventoryExample example);
 
     Token1155Inventory selectByPrimaryKey(Token1155InventoryKey key);
 
-    int updateByExampleSelective(@Param("record") Token1155Inventory record, @Param("example") TokenInventoryExample example);
+    int updateByExampleSelective(@Param("record") Token1155Inventory record, @Param("example") Token1155InventoryExample example);
 
-    int updateByExample(@Param("record") Token1155Inventory record, @Param("example") TokenInventoryExample example);
+    int updateByExample(@Param("record") Token1155Inventory record, @Param("example") Token1155InventoryExample example);
 
     int updateByPrimaryKeySelective(Token1155Inventory record);
 

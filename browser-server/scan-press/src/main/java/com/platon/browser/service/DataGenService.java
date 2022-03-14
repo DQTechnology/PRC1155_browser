@@ -460,8 +460,8 @@ public class DataGenService {
     }
 
     @Retryable(value = Exception.class, maxAttempts = Integer.MAX_VALUE)
-    public Token721Inventory getTokenInventory(Transaction tx) {
-        Token721Inventory tokenInventory = new Token721Inventory();
+    public TokenInventory getTokenInventory(Transaction tx) {
+        TokenInventoryWithBLOBs tokenInventory = new TokenInventoryWithBLOBs();
         tokenInventory.setName("");
         tokenInventory.setDescription("");
         tokenInventory.setImage("");

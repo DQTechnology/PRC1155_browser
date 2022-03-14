@@ -11,19 +11,12 @@ import java.util.List;
 
 public interface ErcContract {
     RemoteCall<String> name();
-
     RemoteCall<String> symbol();
-
     RemoteCall<BigInteger> decimals();
-
     RemoteCall<BigInteger> totalSupply();
-
     RemoteCall<BigInteger> balanceOf(String who, BigInteger id);
-
     List<ErcTxEvent> getTxEvents(final TransactionReceipt transactionReceipt);
-
     RemoteCall<String> getTokenURI(BigInteger tokenId) throws MethodNotSupportedException;
-
     @Data
     class ErcTxEvent {
         private Log log;
@@ -33,7 +26,7 @@ public interface ErcContract {
         private String to;
         // erc 721 1155 的tokenId
         private BigInteger tokenId;
-        // 如果是erc20，value表示转账数量；erc1155 value
+        // 如果是erc20，value表示转账数量；erc721，value表示tokenId
         private BigInteger value;
     }
 }

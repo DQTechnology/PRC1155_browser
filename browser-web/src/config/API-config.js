@@ -88,7 +88,6 @@ const BASE = process.env.VUE_APP_API_ROOT,
     token1155TxList: `${TOKEN_URL}/arc1155-tx/list`,
     token1155InventoryList: `${TOKEN_URL}/arc1155-inventory/list`,
     token1155InventoryDetail: `${TOKEN_URL}/arc1155-inventory/detail`,
-
     // =================================================================
     tokenTransferList: `${TOKEN_URL}/tokenTransferList`,
     // 持有者列表

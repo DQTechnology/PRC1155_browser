@@ -12,10 +12,8 @@ export default {
     erc20Transfer: "PRC20 TRANSFERS",
     erc721Tokens: "PRC721 HOT TOKENS",
     erc721Transfer: "PRC721 TRANSFERS",
-
     erc1155Tokens: "PRC1155 HOT TOKENS",
     erc1155Transfer: "PRC1155 TRANSFERS",
-
     tokenList: "TOKEN LIST",
     more: "MORE",
     comesoon: "Coming soon",
@@ -324,6 +322,7 @@ export default {
     erc20Trade: "PRC20 Token Txns",
     erc721Trade: "PRC721 Token Txns",
     erc1155Trade: "PRC1155 Token Txns",
+
     status: {
       name: "Status",
       name2: "Contract State",
@@ -545,8 +544,8 @@ export default {
     7: "PRC20 ContractExecution", //erc20合约执行
     8: "PRC721 ContractCreation", //erc721合约创建
     9: "PRC721 ContractExecution", //erc721合约执行
-    10: "PRC1155 ContractCreation", //erc721合约创建
-    11: "PRC1155 ContractExecution", //erc721合约执行
+    10: "PRC1155 ContractCreation", //erc1155合约创建
+    11: "PRC1155 ContractExecution", //erc1155合约执行
     21: "Contract Destructed", // 合约销毁
     1000: "CreateValidator", //'发起质押',
     1001: "EditValidator", //'修改质押信息',
@@ -597,14 +596,9 @@ export default {
     6: "Cancelled"
   },
   voteStatus: {
-    1: "YES",
-    2: "NO",
-    3: "ABSTAIN",
-    4: "SUPPORT",
-    11: "YES ",
-    12: "NO ",
-    13: "ABSTAIN ",
-    invalid: "(Invalid)"
+    1: "YEAS",
+    2: "NAYS",
+    other: "ABSTENTIONS",
   },
   actionType: {
     1: "Create the Validator",
@@ -619,6 +613,7 @@ export default {
     12: "DeclareVersion",
   },
   more: {
+    addToExtension: "Add to Extension",
     foundationAddress: 'Foundation Address',
     governableParameter: "GOVERNABLE PARAMETER",
     stakeThreshold: "Minimum stake LATs required to create validator.",
@@ -646,6 +641,26 @@ export default {
       "Penalty threshold：Number of zero production blocks.",
     zeroProduceFreezeDuration:
       "The lock time of node zero out-block penalty（1 epoch=10750blocks）"
+  },
+  extension: {
+    desc: "Users can quickly add to their wallets and Web3 middleware providers (such as MetaMask) to connect to the correct Chain ID and Network ID to connect to the correct chain.Step:",
+    steps: ["Connect...", "Add to...", "Success"],
+    form: {
+      rpc: "Network URL",
+      chainId: "Chain ID",
+      currency: "Currency",
+      website: "Explorer URL",
+      connect: "Connect MetaMask",
+      add: "Add to MetaMask",
+    },
+    error: {
+      already: "MetaMask already exists Chain ID {0}",
+      noMetaMask: `MetaMask plugin is not detected, please <a href="https://metamask.io" target="_black"  style="color: #409eff;font-weight: bold;">install</a>.`,
+      tips: "TIPS",
+      isChrome: "Please use chrome browser to install MetaMask to operate.",
+      mobile: "Please install MetaMask on the PC Chrome browser to operate.",
+      noChainId: "MateMask version is to low or This is not MetaMask",
+    }
   },
   tips: {
     totalSupply_721: "Total amount of Tokens",

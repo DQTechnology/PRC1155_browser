@@ -6,8 +6,6 @@ import java.util.Date;
 
 public class TokenHolder extends TokenHolderKey {
 
-    private String tokenId;
-
     private String balance;
 
     private Date createTime;
@@ -16,13 +14,6 @@ public class TokenHolder extends TokenHolderKey {
 
     private Integer tokenTxQty;
 
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 
     public String getBalance() {
         return balance;

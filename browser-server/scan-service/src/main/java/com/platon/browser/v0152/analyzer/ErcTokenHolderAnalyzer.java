@@ -28,7 +28,6 @@ public class ErcTokenHolderAnalyzer {
     @Resource
     private CustomTokenHolderMapper customTokenHolderMapper;
 
-
     private TokenHolderKey getTokenHolderKey(String ownerAddress, ErcTx ercTx) {
         TokenHolderKey key = new TokenHolderKey();
         key.setTokenAddress(ercTx.getContract());
@@ -36,7 +35,6 @@ public class ErcTokenHolderAnalyzer {
         key.setTokenId(ercTx.getTokenId());
         return key;
     }
-
 
     private void resolveTokenHolder(
             String ownerAddress,
@@ -65,7 +63,7 @@ public class ErcTokenHolderAnalyzer {
         } else {
             tokenHolder.setTokenTxQty(tokenHolder.getTokenTxQty() + 1);
         }
-        //TokenTxQty： 用户对该erc20的交易总数，或者是用户对该erc721所有tokenId的交易总数
+        //TokenTxQty： 用户对该erc20的交易总数，或者是用户对该erc721,erc1155 所有tokenId的交易总数
         log.info("该合约地址[{}],持有者地址[{}],持有者对该合约的交易数为[{}]", tokenHolder.getTokenAddress(), tokenHolder.getAddress(), tokenHolder.getTokenTxQty());
         tokenHolder.setUpdateTime(date);
         insertOrUpdate.add(tokenHolder);

@@ -258,14 +258,12 @@ public class Erc20Contract extends Contract implements ErcContract {
         return executeRemoteCallTransaction(function);
     }
 
-
     @Override
     public RemoteCall<BigInteger> balanceOf(String _owner, BigInteger _id) {
         final Function function = new Function(FUNC_BALANCEOF, Collections.singletonList(new Address(_owner)), Collections.singletonList(new TypeReference<Uint256>() {
         }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
-
 
     public RemoteCall<TransactionReceipt> closeTransfer() {
         final Function function = new Function(FUNC_CLOSETRANSFER, Collections.emptyList(), Collections.emptyList());

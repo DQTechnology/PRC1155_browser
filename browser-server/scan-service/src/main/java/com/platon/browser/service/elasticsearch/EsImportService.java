@@ -1,5 +1,6 @@
 package com.platon.browser.service.elasticsearch;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.platon.browser.elasticsearch.dto.*;
 import com.platon.browser.exception.BusinessException;
@@ -95,14 +96,46 @@ public class EsImportService {
         try {
             long startTime = System.currentTimeMillis();
             CountDownLatch latch = new CountDownLatch(SERVICE_COUNT);
-
             submit(esBlockService, blocks, latch, ESKeyEnum.Block, CommonUtil.getTraceId());
             submit(esTransactionService, transactions, latch, ESKeyEnum.Transaction, CommonUtil.getTraceId());
             submit(esDelegateRewardService, delegationRewards, latch, ESKeyEnum.DelegateReward, CommonUtil.getTraceId());
             submit(esErc20TxService, erc20TxList, latch, ESKeyEnum.Erc20Tx, CommonUtil.getTraceId());
             submit(esErc721TxService, erc721TxList, latch, ESKeyEnum.Erc721Tx, CommonUtil.getTraceId());
             submit(esErc1155TxService, erc1155TxList, latch, ESKeyEnum.Erc1155Tx, CommonUtil.getTraceId());
+            latch.await();
+            if (isRetry.get()) {
+                LongSummaryStatistics blockSum = blocks.stream().collect(Collectors.summarizingLong(Block::getNum));
+                throw new Exception(StrUtil.format("ES相关区块[{}]-[{}]信息批量入库异常，重试[{}]次", blockSum.getMin(), blockSum.getMax(), retryCount.incrementAndGet()));
+            } else {
+                retryCount.set(0);
+            }
+            log.debug("处理耗时:{} ms", System.currentTimeMillis() - startTime);
+        } catch (Exception e) {
+            log.error("入库ES异常", e);
+            throw new BusinessException(e.getMessage());
+        }
+    }
 
+    @Retryable(value = BusinessException.class, maxAttempts = Integer.MAX_VALUE)
+    public void batchImport(Set<Block> blocks, Set<Transaction> transactions, Set<ErcTx> erc20TxList, Set<ErcTx> erc721TxList, Set<ErcTx> erc1155TxList, Set<DelegationReward> delegationRewards) throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("ES batch import: {}(blocks({}), transactions({}), delegationRewards({}), erc20TxList({}), erc721TxList({}))",
+                    Thread.currentThread().getStackTrace()[1].getMethodName(),
+                    blocks.size(),
+                    transactions.size(),
+                    delegationRewards.size(),
+                    erc20TxList.size(),
+                    erc721TxList.size());
+        }
+        try {
+            long startTime = System.currentTimeMillis();
+            CountDownLatch latch = new CountDownLatch(SERVICE_COUNT);
+            submit(esBlockService, blocks, latch, ESKeyEnum.Block, CommonUtil.getTraceId());
+            submit(esTransactionService, transactions, latch, ESKeyEnum.Transaction, CommonUtil.getTraceId());
+            submit(esDelegateRewardService, delegationRewards, latch, ESKeyEnum.DelegateReward, CommonUtil.getTraceId());
+            submit(esErc20TxService, erc20TxList, latch, ESKeyEnum.Erc20Tx, CommonUtil.getTraceId());
+            submit(esErc721TxService, erc721TxList, latch, ESKeyEnum.Erc721Tx, CommonUtil.getTraceId());
+            submit(esErc1155TxService, erc1155TxList, latch, ESKeyEnum.Erc1155Tx, CommonUtil.getTraceId());
             latch.await();
             if (isRetry.get()) {
                 LongSummaryStatistics blockSum = blocks.stream().collect(Collectors.summarizingLong(Block::getNum));
@@ -170,8 +203,12 @@ public class EsImportService {
     private <T> void statisticsLog(Set<T> data, ESKeyEnum eSKeyEnum) {
         try {
             if (eSKeyEnum.compareTo(ESKeyEnum.Block) == 0) {
-                LongSummaryStatistics blockSum = ((Set<Block>) data).stream().collect(Collectors.summarizingLong(Block::getNum));
-                log.info("ES批量入库成功统计:区块[{}]-[{}]", blockSum.getMin(), blockSum.getMax());
+                if (CollUtil.isNotEmpty(data)) {
+                    LongSummaryStatistics blockSum = ((Set<Block>) data).stream().collect(Collectors.summarizingLong(Block::getNum));
+                    log.info("ES批量入库成功统计:区块[{}]-[{}]", blockSum.getMin(), blockSum.getMax());
+                } else {
+                    log.info("ES批量入库成功统计:区块[{}]-[{}]", 0, 0);
+                }
             } else if (eSKeyEnum.compareTo(ESKeyEnum.Transaction) == 0) {
                 log.info("ES批量入库成功统计:交易数[{}]", data.size());
             } else if (eSKeyEnum.compareTo(ESKeyEnum.Erc20Tx) == 0) {

@@ -26,7 +26,6 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="have_reward" jdbcType="DECIMAL" property="haveReward"/>
         <result column="erc1155_tx_qty" jdbcType="INTEGER" property="erc1155TxQty"/>
-
         <result column="erc721_tx_qty" jdbcType="INTEGER" property="erc721TxQty"/>
         <result column="erc20_tx_qty" jdbcType="INTEGER" property="erc20TxQty"/>
         <result column="contract_bin" jdbcType="LONGVARCHAR" property="contractBin"/>
@@ -38,7 +37,7 @@
 
     <select id="findAddressDetail" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT a.address,
-               a.type,
+               a.`type`,
                a.balance,
                a.restricting_balance,
                a.staking_value,
@@ -64,9 +63,9 @@
                a.erc721_tx_qty,
                a.erc20_tx_qty,
                a.contract_bin,
-               b.type          AS tokenType,
-               b.symbol        AS tokenSymbol,
-               b.`name`        AS tokenName,
+               b.type AS tokenType,
+               b.symbol AS tokenSymbol,
+               b.`name` AS tokenName,
                b.token_tx_qty
         FROM address a
                  LEFT JOIN token b ON a.address = b.address
@@ -96,15 +95,12 @@
     </select>
 
     <update id="updateAddressHaveReward">
-        update address
-        set `have_reward` = `have_reward` + #{amount}
-        where `address` = #{address};
+        update address set `have_reward` = `have_reward` + #{amount} where `address` = #{address};
     </update>
 
     <update id="batchUpdateAddressErcQty">
         <foreach collection="list" item="item" separator=";">
-            update address set erc20_tx_qty = erc20_tx_qty + #{item.erc20TxQty} , erc721_tx_qty = erc721_tx_qty +
-            #{item.erc721TxQty},erc1155_tx_qty = erc1155_tx_qty + #{item.erc1155TxQty} where address = #{item.address}
+            update address set erc20_tx_qty = erc20_tx_qty + #{item.erc20TxQty} , erc721_tx_qty = erc721_tx_qty + #{item.erc721TxQty},erc1155_tx_qty = erc1155_tx_qty + #{item.erc1155TxQty}  where address = #{item.address}
         </foreach>
     </update>
 

@@ -430,18 +430,37 @@ CREATE TABLE `token_holder` (
 DROP TABLE IF EXISTS `tx_bak`;
 CREATE TABLE `tx_bak` (
                           `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                          `hash` varchar(72) NOT NULL COMMENT '交易Hash',
-                          `tx_type` int(10) NOT NULL COMMENT '交易类型',
-                          `num` bigint(20) NOT NULL COMMENT '区块号',
-                          `info` text COMMENT '交易信息',
-                          `from_address` varchar(42)  NOT NULL COMMENT 'from地址',
-                          `to_address` varchar(42) NOT NULL COMMENT 'to地址',
+                          `hash` varchar(72) NOT NULL COMMENT '交易hash',
+                          `b_hash` varchar(72) DEFAULT NULL COMMENT '区块hash',
+                          `num` bigint(20) DEFAULT NULL COMMENT '块高',
+                          `index` int(10) DEFAULT NULL COMMENT '交易index',
+                          `time` timestamp NULL DEFAULT NULL COMMENT '交易时间',
+                          `nonce` varchar(255) DEFAULT NULL COMMENT '随机值',
+                          `status` int(1) DEFAULT NULL COMMENT '状态,1.成功,2.失败',
+                          `gas_price` varchar(255) DEFAULT NULL COMMENT 'gas价格',
+                          `gas_used` varchar(255) DEFAULT NULL COMMENT 'gas花费',
+                          `gas_limit` varchar(255) DEFAULT NULL COMMENT 'gas限制',
+                          `from` varchar(42) DEFAULT NULL COMMENT 'from地址',
+                          `to` varchar(42) DEFAULT NULL COMMENT 'to地址',
+                          `value` varchar(255) DEFAULT NULL COMMENT '值',
+                          `type` int(10) DEFAULT NULL COMMENT '交易类型',
+                          `cost` varchar(50) DEFAULT NULL COMMENT '成本',
+                          `to_type` int(4) DEFAULT NULL COMMENT 'to地址类型',
+                          `seq` bigint(20) DEFAULT NULL COMMENT 'seq',
+                          `cre_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                          `upd_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                          `input` longtext ,
+                          `info` longtext ,
+                          `erc721_tx_info` longtext COMMENT 'erc721交易列表信息',
+                          `erc20_tx_info` longtext COMMENT 'erc20交易列表信息',
+                          `transfer_tx_info` longtext  COMMENT '内部转账交易列表信息',
+                          `ppos_tx_info` longtext COMMENT 'ppos调用交易列表信息',
+                          `fail_reason` longtext ,
+                          `contract_type` int(10) DEFAULT NULL COMMENT '合约类型',
+                          `method` longtext ,
+                          `bin` longtext ,
                           `contract_address` varchar(42) DEFAULT NULL COMMENT '合约地址',
-                          `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-                          `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                          PRIMARY KEY (`id`),
-                          KEY `block_number` (`num`) USING BTREE,
-                          KEY `id` (`id`)
+                          PRIMARY KEY (`id`)
 ) COMMENT='交易备份表';
 
 DROP TABLE IF EXISTS `token_inventory`;
@@ -459,6 +478,8 @@ CREATE TABLE `token_inventory` (
                                    `token_owner_tx_qty` int(11) DEFAULT '0' COMMENT 'owner对该tokenaddress和tokenid的对应交易数',
                                    `small_image` varchar(256) DEFAULT NULL COMMENT '缩略图',
                                    `medium_image` varchar(256) DEFAULT NULL COMMENT '中等缩略图',
+                                   `token_url` longtext COMMENT 'url',
+                                   `retry_num` int(10) NOT NULL DEFAULT '0' COMMENT '重试次数',
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `token_address` (`token_address`,`token_id`)
 );
@@ -480,6 +501,7 @@ CREATE TABLE `tx_erc_20_bak` (
                                  `bn` bigint(20) DEFAULT NULL COMMENT '区块高度',
                                  `b_time` datetime DEFAULT NULL COMMENT '区块时间',
                                  `tx_fee` varchar(255) DEFAULT NULL COMMENT '手续费',
+                                 `remark` longtext COMMENT '备注',
                                  PRIMARY KEY (`id`)
 ) COMMENT='erc20交易备份表';
 
@@ -500,8 +522,23 @@ CREATE TABLE `tx_erc_721_bak` (
                                   `bn` bigint(20) DEFAULT NULL COMMENT '区块高度',
                                   `b_time` datetime DEFAULT NULL COMMENT '区块时间',
                                   `tx_fee` varchar(255) DEFAULT NULL COMMENT '手续费',
+                                  `remark` longtext COMMENT '备注',
                                   PRIMARY KEY (`id`)
 ) COMMENT='erc721交易备份表';
+
+DROP TABLE IF EXISTS `tx_delegation_reward_bak`;
+CREATE TABLE `tx_delegation_reward_bak` (
+                                            `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                            `hash` varchar(72) NOT NULL COMMENT '交易hash',
+                                            `bn` bigint(20) DEFAULT NULL COMMENT '区块高度',
+                                            `addr` varchar(42) DEFAULT NULL COMMENT '地址',
+                                            `time` timestamp NULL DEFAULT NULL COMMENT '时间',
+                                            `cre_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                            `upd_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                            `extra` longtext ,
+                                            `extra_clean` longtext ,
+                                            PRIMARY KEY (`id`)
+) COMMENT='领取奖励备份表';
 
 DROP TABLE IF EXISTS `vote`;
 CREATE TABLE `vote` (
@@ -563,3 +600,4 @@ INSERT INTO `point_log`(`id`, `type`, `name`, `desc`, `position`, `create_time`,
 INSERT INTO `point_log`(`id`, `type`, `name`, `desc`, `position`, `create_time`, `update_time`) VALUES (5, 1, 'tx_20_bak', '从erc20交易备份表统计TokenHolder余额的断点记录', '0', '2021-12-06 10:23:58', '2021-12-06 10:25:49');
 INSERT INTO `point_log`(`id`, `type`, `name`, `desc`, `position`, `create_time`, `update_time`) VALUES (6, 1, 'tx_721_bak', '从erc721交易备份表统计TokenHolder持有者数的断点记录', '0', '2021-12-06 10:25:34', '2021-12-06 10:25:39');
 INSERT INTO `point_log`(`id`, `type`, `name`, `desc`, `position`, `create_time`, `update_time`) VALUES (7, 1, 'token_inventory', '增量更新token库存信息断点记录', '0', '2021-12-10 02:44:32', '2021-12-10 02:44:32');
+INSERT INTO `point_log`(`id`, `type`, `name`, `desc`, `position`, `create_time`, `update_time`) VALUES (8, 1, 'token_inventory', '增量更新销毁token库存信息断点记录', '0', '2021-12-10 02:44:32', '2021-12-10 02:44:32');

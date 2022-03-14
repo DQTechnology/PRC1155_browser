@@ -555,7 +555,7 @@ public class PressApplication implements ApplicationRunner {
         if (currentTokenCount < tokenMaxCount) {
             TokenEvent tokenEvent = new TokenEvent();
             List<TokenHolder> tokenHolderList = new ArrayList<>();
-            List<Token721Inventory> tokenInventoryList = new ArrayList<>();
+            List<TokenInventory> tokenInventoryList = new ArrayList<>();
             for (Transaction tx : blockResult.getTransactionList()) {
                 // erc20和erc721创建，入库mysql
                 if (tx.getType() == Transaction.TypeEnum.ERC20_CONTRACT_CREATE.getCode()) {

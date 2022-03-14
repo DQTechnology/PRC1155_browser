@@ -12,7 +12,7 @@ import com.platon.browser.response.RespPage;
 import com.platon.browser.response.account.AccountDownload;
 import com.platon.browser.response.token.QueryTokenIdDetailResp;
 import com.platon.browser.response.token.QueryTokenIdListResp;
-import com.platon.browser.service.Token721Service;
+import com.platon.browser.service.TokenService;
 import com.platon.browser.utils.I18nUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +37,7 @@ public class Arc721InventoryController {
     private CommonMethod commonMethod;
 
     @Resource
-    private Token721Service token721Service;
+    private TokenService tokenService;
 
     /**
      * ARC721 库存列表
@@ -49,7 +49,7 @@ public class Arc721InventoryController {
      */
     @PostMapping("list")
     public Mono<RespPage<QueryTokenIdListResp>> list(@Valid @RequestBody QueryTokenIdListReq req) {
-        return Mono.just(token721Service.queryTokenIdList(req));
+        return Mono.just(tokenService.queryTokenIdList(req));
     }
 
     /**
@@ -62,7 +62,7 @@ public class Arc721InventoryController {
     @PostMapping("detail")
     public Mono<BaseResp<QueryTokenIdDetailResp>> detail(@Valid @RequestBody QueryTokenIdDetailReq req) {
         return Mono.create(sink -> {
-            QueryTokenIdDetailResp resp = token721Service.queryTokenIdDetail(req);
+            QueryTokenIdDetailResp resp = tokenService.queryTokenIdDetail(req);
             sink.success(BaseResp.build(RetEnum.RET_SUCCESS.getCode(), i18n.i(I18nEnum.SUCCESS), resp));
         });
     }
@@ -93,7 +93,7 @@ public class Arc721InventoryController {
              * 鉴权
              */
             commonMethod.recaptchaAuth(token);
-            AccountDownload accountDownload = token721Service.exportTokenId(address, contract, tokenId, local, timeZone);
+            AccountDownload accountDownload = tokenService.exportTokenId(address, contract, tokenId, local, timeZone);
             downFileCommon.download(response, accountDownload.getFilename(), accountDownload.getLength(),
                     accountDownload.getData());
         } catch (Exception e) {

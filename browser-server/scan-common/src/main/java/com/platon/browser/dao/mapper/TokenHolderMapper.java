@@ -2,10 +2,8 @@ package com.platon.browser.dao.mapper;
 
 import com.platon.browser.dao.entity.TokenHolder;
 import com.platon.browser.dao.entity.TokenHolderExample;
-
-import java.util.List;
-
 import com.platon.browser.dao.entity.TokenHolderKey;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface TokenHolderMapper {

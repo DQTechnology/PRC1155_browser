@@ -148,11 +148,6 @@
             <if test="address != null">
                 #{address,jdbcType=VARCHAR},
             </if>
-
-            <if test="tokenId != null">
-                #{tokenId,jdbcType=VARCHAR},
-            </if>
-
             <if test="balance != null">
                 #{balance,jdbcType=VARCHAR},
             </if>
@@ -183,11 +178,9 @@
             <if test="record.address != null">
                 address = #{record.address,jdbcType=VARCHAR},
             </if>
-
             <if test="record.tokenId != null">
                 balance = #{record.tokenId,jdbcType=VARCHAR},
             </if>
-
             <if test="record.balance != null">
                 balance = #{record.balance,jdbcType=VARCHAR},
             </if>
@@ -222,7 +215,7 @@
         update token_holder
         <set>
             <if test="tokenId != null">
-                balance = #{tokenId,jdbcType=VARCHAR},
+                token_id = #{tokenId,jdbcType=VARCHAR},
             </if>
             <if test="balance != null">
                 balance = #{balance,jdbcType=VARCHAR},
@@ -260,8 +253,8 @@
         (token_address, address, token_id, balance, create_time, update_time, token_tx_qty)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
-            #{item.tokenId,jdbcType=VARCHAR}, #{item.balance,jdbcType=VARCHAR},
+            (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},#{item.tokenId,jdbcType=VARCHAR},
+            #{item.balance,jdbcType=VARCHAR},
             #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP},
             #{item.tokenTxQty,jdbcType=INTEGER}
             )
@@ -288,11 +281,9 @@
                 <if test="'address'.toString() == column.value">
                     #{item.address,jdbcType=VARCHAR}
                 </if>
-
                 <if test="'token_id'.toString() == column.value">
                     #{item.tokenId,jdbcType=VARCHAR}
                 </if>
-
                 <if test="'balance'.toString() == column.value">
                     #{item.balance,jdbcType=VARCHAR}
                 </if>

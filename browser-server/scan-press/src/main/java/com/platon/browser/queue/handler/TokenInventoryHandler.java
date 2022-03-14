@@ -1,8 +1,9 @@
 package com.platon.browser.queue.handler;
 
 import cn.hutool.core.collection.ListUtil;
-import com.platon.browser.dao.entity.Token721Inventory;
-import com.platon.browser.dao.mapper.Token721InventoryMapper;
+import com.platon.browser.dao.entity.TokenInventory;
+import com.platon.browser.dao.entity.TokenInventoryWithBLOBs;
+import com.platon.browser.dao.mapper.TokenInventoryMapper;
 import com.platon.browser.queue.event.TokenInventoryEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +22,14 @@ import java.util.Set;
 public class TokenInventoryHandler extends AbstractHandler<TokenInventoryEvent> {
 
     @Resource
-    private Token721InventoryMapper tokenErc721InventoryMapper;
+    private TokenInventoryMapper tokenInventoryMapper;
 
     @Setter
     @Getter
     @Value("${disruptor.queue.token-inventory.batch-size}")
     private volatile int batchSize;
 
-    private Set<Token721Inventory> stage = new HashSet<>();
+    private Set<TokenInventoryWithBLOBs> stage = new HashSet<>();
 
     @PostConstruct
     private void init() {
@@ -43,7 +44,7 @@ public class TokenInventoryHandler extends AbstractHandler<TokenInventoryEvent> 
             stage.addAll(event.getTokenList());
             if (stage.size() < batchSize)
                 return;
-            tokenErc721InventoryMapper.batchInsert(ListUtil.list(true, stage));
+            tokenInventoryMapper.batchInsert(ListUtil.list(true, stage));
             long endTime = System.currentTimeMillis();
             printTps("token", stage.size(), startTime, endTime);
             stage.clear();

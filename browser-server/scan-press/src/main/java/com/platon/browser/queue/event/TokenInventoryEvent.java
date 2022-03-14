@@ -1,6 +1,6 @@
 package com.platon.browser.queue.event;
 
-import com.platon.browser.dao.entity.Token721Inventory;
+import com.platon.browser.dao.entity.TokenInventoryWithBLOBs;
 import lombok.Data;
 
 import java.util.List;
@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class TokenInventoryEvent implements Event {
 
-    private List<Token721Inventory> tokenList;
+    private List<TokenInventoryWithBLOBs> tokenList;
 
 }

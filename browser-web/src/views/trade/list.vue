@@ -5,13 +5,17 @@
     </div>
     <div class="sub-title">
       <div class="fontSize14 trade-count">
-        <template v-if="pageTotal > 500000">{{ $t('tradeAbout.morethen') }}></template>
+        <template v-if="pageTotal > 500000">
+          {{ $t('tradeAbout.morethen') }}>
+        </template>
         <template v-else>
           {{ $t('tradeAbout.morethen2') }}
         </template>
         <b class="black">{{ pageTotal }}</b>
         {{ $t('tradeAbout.foundTransactions') }}
-        <span v-if="pageTotal > 500000">{{ $t('tradeAbout.showingLast') }}</span>
+        <span v-if="pageTotal > 500000">{{
+          $t('tradeAbout.showingLast')
+        }}</span>
       </div>
       <!-- 上部分页标签 -->
       <div class="pagination-box1">
@@ -30,15 +34,32 @@
     </div>
     <!-- 主表格区域 -->
     <div class="table">
-      <el-table :data="tableData" style="width: 100%" key="firstTable" size="mini" v-loading="loading">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        key="firstTable"
+        size="mini"
+        v-loading="loading"
+      >
         <!-- 交易哈希值（TxHash） -->
         <el-table-column :label="$t('tradeAbout.hash')" min-width="150px">
           <template slot-scope="scope">
             <div class="flex-special">
-              <el-tooltip class="item" effect="dark" placement="bottom-start" v-if="scope.row.txReceiptStatus == 0">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                placement="bottom-start"
+                v-if="scope.row.txReceiptStatus == 0"
+              >
                 <div slot="content">
-                  <span class="title-warning">{{ $t('tradeAbout.warn') }}：</span>
-                  {{ scope.row.failReason ? scope.row.failReason : $t('tradeAbout.transactionFailure') }}
+                  <span class="title-warning"
+                    >{{ $t('tradeAbout.warn') }}：</span
+                  >
+                  {{
+                    scope.row.failReason
+                      ? scope.row.failReason
+                      : $t('tradeAbout.transactionFailure')
+                  }}
                 </div>
                 <i class="iconfont iconxinxi cursor">&#xe63f;</i>
               </el-tooltip>
@@ -48,9 +69,11 @@
               </el-tooltip>-->
 
               <!-- 交易hash: 显示0x+18 -->
-              <router-link class="cursor normal ellipsis hash-width" :to="getTradeUrl(scope.row.txHash)">
-                {{ scope.row.txHash }}
-              </router-link>
+              <router-link
+                class="cursor normal ellipsis hash-width"
+                :to="getTradeUrl(scope.row.txHash)"
+                >{{ scope.row.txHash }}</router-link
+              >
             </div>
             <!-- <span class='cursor normal' @click='goTradeDetail(scope.$index,scope.row)'>{{scope.row.txHash}}</span> -->
           </template>
@@ -59,16 +82,21 @@
         <!-- 区块（Block） -->
         <el-table-column :label="$t('tradeAbout.block')">
           <template slot-scope="scope">
-            <router-link class="cursor normal" :to="getBlockUrl(scope.row.blockNumber)">
-              {{ scope.row.blockNumber }}
-            </router-link>
+            <router-link
+              class="cursor normal"
+              :to="getBlockUrl(scope.row.blockNumber)"
+              >{{ scope.row.blockNumber }}</router-link
+            >
           </template>
         </el-table-column>
 
         <!-- 块龄（Age） -->
         <el-table-column :label="$t('tradeAbout.age')">
           <template slot-scope="scope">
-            <span>{{ timeDiffFn(scope.row.serverTime, scope.row.timestamp) }}{{ $t('tradeAbout.before') }}</span>
+            <span
+              >{{ timeDiffFn(scope.row.serverTime, scope.row.timestamp)
+              }}{{ $t('tradeAbout.before') }}</span
+            >
           </template>
         </el-table-column>
 
@@ -78,9 +106,11 @@
             <!-- <span class='cursor normal' @click='goAddressDetail(scope.$index,scope.row)'>{{scope.row.from}}</span> -->
             <div class="flex-special">
               <!-- 操作地址：即签名交易的地址，显示0x+14 -->
-              <router-link class="cursor normal ellipsis adr-width" :to="getAddressUrl(scope.row.from)">
-                {{ scope.row.from }}
-              </router-link>
+              <router-link
+                class="cursor normal ellipsis adr-width"
+                :to="getAddressUrl(scope.row.from)"
+                >{{ scope.row.from }}</router-link
+              >
             </div>
           </template>
         </el-table-column>
@@ -130,8 +160,8 @@
   </div>
 </template>
 <script>
-import apiService from '@/services/API-services'
-import { timeDiff } from '@/services/time-services'
+import apiService from '@/services/API-services';
+import { timeDiff } from '@/services/time-services';
 
 export default {
   name: 'trade-list',
@@ -143,8 +173,8 @@ export default {
       pageTotal: 0,
       displayTotalCount: 0,
       loading: false,
-      isLoaded: false
-    }
+      isLoaded: false,
+    };
   },
   props: {},
   computed: {},
@@ -155,81 +185,88 @@ export default {
     getTradeList() {
       let param = {
         pageNo: this.currentPage,
-        pageSize: this.pageSize
-      }
-      this.loading = true
+        pageSize: this.pageSize,
+      };
+      this.loading = true;
       apiService.trade
         .transactionList(param)
-        .then(res => {
-          let { data, totalPages, totalCount, code, errMsg, displayTotalCount } = res
+        .then((res) => {
+          let {
+            data,
+            totalPages,
+            totalCount,
+            code,
+            errMsg,
+            displayTotalCount,
+          } = res;
           if (code == 0) {
-            this.tableData = data
-            this.pageTotal = totalCount
-            this.displayTotalCount = displayTotalCount
+            this.tableData = data;
+            this.pageTotal = totalCount;
+            this.displayTotalCount = displayTotalCount;
           } else {
-            this.$message.error(errMsg)
+            this.$message.error(errMsg);
           }
         })
-        .catch(error => {
-          this.$message.error(error)
+        .catch((error) => {
+          this.$message.error(error);
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     timeDiffFn(beginTime, endTime = Date.now()) {
-      return timeDiff(beginTime, endTime)
+      return timeDiff(beginTime, endTime);
     },
     replace() {
       this.$router.replace({
         query: {
           currentPage: this.currentPage,
-          pageSize: this.pageSize
-        }
-      })
+          pageSize: this.pageSize,
+        },
+      });
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getTradeList()
-      this.replace()
+      this.currentPage = val;
+      this.getTradeList();
+      this.replace();
     },
     handleSizeChange(val) {
-      this.currentPage = 1
-      this.pageSize = val
-      this.getTradeList()
-      this.replace()
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.getTradeList();
+      this.replace();
     }
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       // 通过 `vm` 访问组件实例
       if (from.path.indexOf('-detail') == -1) {
         // 不取缓存
-        vm.currentPage = 1
-        vm.pageSize = 20
+        vm.currentPage = 1;
+        vm.pageSize = 20;
         if (vm.$route.query.currentPage) {
-          vm.currentPage = vm.$route.query.currentPage - 0
-          vm.pageSize = vm.$route.query.pageSize - 0
+          vm.currentPage = vm.$route.query.currentPage - 0;
+          vm.pageSize = vm.$route.query.pageSize - 0;
         }
-        if (vm.isLoaded) {
-          vm.isLoaded = false
+        if (vm.isLoaded){
+          vm.isLoaded = false;
           return
         }
-        vm.getTradeList()
+        vm.getTradeList();
       }
-    })
+    });
   },
   //生命周期函数
   created() {
     if (this.$route.query.currentPage) {
-      this.currentPage = this.$route.query.currentPage - 0
-      this.pageSize = this.$route.query.pageSize - 0
+      this.currentPage = this.$route.query.currentPage - 0;
+      this.pageSize = this.$route.query.pageSize - 0;
     }
-    this.isLoaded = true
-    this.getTradeList()
+    this.isLoaded = true;
+    this.getTradeList();
   },
-  mounted() {}
-}
+  mounted() {},
+};
 </script>
 <style lang="less" scoped>
 .title-warning {

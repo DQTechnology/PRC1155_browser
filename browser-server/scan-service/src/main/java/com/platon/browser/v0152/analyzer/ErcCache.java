@@ -23,8 +23,8 @@ public class ErcCache {
 
     Set<String> erc721AddressCache = new ConcurrentHashSet<>();
 
-    Set<String> erc1155AddressCache = new ConcurrentHashSet<>();
 
+    Set<String> erc1155AddressCache = new ConcurrentHashSet<>();
 
     @Resource
     private TokenMapper tokenMapper;
@@ -74,4 +74,5 @@ public class ErcCache {
     public Collection<String> getErc1155AddressCache() {
         return Collections.unmodifiableCollection(erc1155AddressCache);
     }
+
 }

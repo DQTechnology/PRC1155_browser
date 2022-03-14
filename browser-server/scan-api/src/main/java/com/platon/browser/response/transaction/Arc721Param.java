@@ -35,7 +35,6 @@ public class Arc721Param {
      * tokenId
      */
     private  String tokenId;
-
     /**
      * 内部交易value
      */

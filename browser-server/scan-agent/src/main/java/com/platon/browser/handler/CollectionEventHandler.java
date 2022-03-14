@@ -11,10 +11,7 @@ import com.platon.browser.cache.AddressCache;
 import com.platon.browser.cache.NodeCache;
 import com.platon.browser.dao.custommapper.*;
 import com.platon.browser.dao.mapper.NodeMapper;
-import com.platon.browser.elasticsearch.dto.Block;
-import com.platon.browser.elasticsearch.dto.ErcTx;
-import com.platon.browser.elasticsearch.dto.NodeOpt;
-import com.platon.browser.elasticsearch.dto.Transaction;
+import com.platon.browser.elasticsearch.dto.*;
 import com.platon.browser.publisher.ComplementEventPublisher;
 import com.platon.browser.service.block.BlockService;
 import com.platon.browser.service.ppos.PPOSService;
@@ -75,6 +72,10 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
 
     @Resource
     private CustomTx1155BakMapper customTx1155BakMapper;
+
+    @Resource
+    private CustomTxDelegationRewardBakMapper customTxDelegationRewardBakMapper;
+
     /**
      * 重试次数
      */
@@ -131,6 +132,11 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
                 addTxErc721Bak(transactions);
                 addTxErc1155Bak(transactions);
             }
+            List<DelegationReward> delegationRewardList = txAnalyseResult.getDelegationRewardList();
+            // 委托奖励交易入库
+            if (CollUtil.isNotEmpty(delegationRewardList)) {
+                customTxDelegationRewardBakMapper.batchInsert(delegationRewardList);
+            }
             // 操作日志入库mysql，再由定时任务同步到es，因为缓存无法实现自增id，所以不再由环形队列入库，不再删除操作日志表
             if (CollUtil.isNotEmpty(nodeOpts1)) {
                 // 依赖于数据库的自增id
@@ -138,7 +144,7 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
             }
             // 统计业务参数，以MySQL数据库块高为准，所以必须保证块高是最后入库
             statisticService.analyze(copyEvent);
-            complementEventPublisher.publish(copyEvent.getBlock(), transactions, nodeOpts1, txAnalyseResult.getDelegationRewardList(), event.getTraceId());
+            complementEventPublisher.publish(copyEvent.getBlock(), transactions, nodeOpts1, delegationRewardList, event.getTraceId());
             // 释放对象引用
             event.releaseRef();
             retryCount.set(0);
@@ -178,12 +184,7 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
             if (CollUtil.isNotEmpty(event.getBlock().getOriginTransactions())) {
                 txHashList = event.getBlock().getOriginTransactions().stream().map(com.platon.protocol.core.methods.response.Transaction::getHash).collect(Collectors.toList());
             }
-            log.warn("重试次数[{}],节点重新初始化，该区块[{}]交易列表{}重复处理，event对象数据为[{}]，copyEvent对象数据为[{}]",
-                     retryCount.get(),
-                     event.getBlock().getNum(),
-                     JSONUtil.toJsonStr(txHashList),
-                     JSONUtil.toJsonStr(event),
-                     JSONUtil.toJsonStr(copyEvent));
+            log.warn("重试次数[{}],节点重新初始化，该区块[{}]交易列表{}重复处理", retryCount.get(), event.getBlock().getNum(), JSONUtil.toJsonStr(txHashList));
         }
         return copyEvent;
     }
@@ -209,14 +210,14 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
      * @date: 2021/12/16
      */
     private void addTxErc20Bak(List<Transaction> transactions) {
-        Set<ErcTx> erc20Set = new HashSet<>();
+        List<ErcTx> erc20List = new ArrayList<>();
         transactions.forEach(transaction -> {
             if (CollUtil.isNotEmpty(transaction.getErc20TxList())) {
-                erc20Set.addAll(transaction.getErc20TxList());
+                erc20List.addAll(transaction.getErc20TxList());
             }
         });
-        if (CollUtil.isNotEmpty(erc20Set)) {
-            customTx20BakMapper.batchInsert(erc20Set);
+        if (CollUtil.isNotEmpty(erc20List)) {
+            customTx20BakMapper.batchInsert(erc20List);
         }
     }
 
@@ -228,16 +229,17 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
      * @date: 2021/12/16
      */
     private void addTxErc721Bak(List<Transaction> transactions) {
-        Set<ErcTx> erc721Set = new HashSet<>();
+        List<ErcTx> erc721List = new ArrayList<>();
         transactions.forEach(transaction -> {
             if (CollUtil.isNotEmpty(transaction.getErc721TxList())) {
-                erc721Set.addAll(transaction.getErc721TxList());
+                erc721List.addAll(transaction.getErc721TxList());
             }
         });
-        if (CollUtil.isNotEmpty(erc721Set)) {
-            customTx721BakMapper.batchInsert(erc721Set);
+        if (CollUtil.isNotEmpty(erc721List)) {
+            customTx721BakMapper.batchInsert(erc721List);
         }
     }
+
 
     /**
      * erc1155交易入库
@@ -257,4 +259,5 @@ public class CollectionEventHandler implements EventHandler<CollectionEvent> {
             customTx1155BakMapper.batchInsert(erc1155Set);
         }
     }
+
 }

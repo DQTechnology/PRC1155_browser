@@ -8,7 +8,7 @@
       <div class="detail-change">
         <div class="detail-copy">
           <span>{{ $t('menu.tokens') }} </span>
-          <i @click="goTokenDetail(detailInfo.contract, 'erc721')" style="cursor: pointer">{{ `${detailInfo.tokenName} (${detailInfo.symbol})` | sliceStr(21) }}</i>
+          <i @click="goTokenDetail(detailInfo.contract, 'erc1155')" style="cursor: pointer">{{ `${detailInfo.tokenName} (${detailInfo.symbol})` | sliceStr(21) }}</i>
         </div>
       </div>
       <el-row class="overview-wrap" type="flex" justify="space-between">
@@ -17,7 +17,7 @@
           <div class="overview">
             <h3 class="Gilroy-Medium">
               {{ $t('contract.overview') }}
-              <span class="token-type-name">{{ $t('tokens.erc721') }}</span>
+              <span class="token-type-name">{{ $t('tokens.erc1155') }}</span>
             </h3>
             <ul>
               <li>
@@ -26,7 +26,7 @@
               </li>
               <li>
                 <label class="Gilroy-Medium">{{
-                  $t('tokens.transfers_721')
+                  $t('tokens.transfers_1155')
                 }}</label>
                 <div class="money">{{ detailInfo.txCount }}</div>
               </li>
@@ -47,7 +47,7 @@
                     :to="getContractUrl(detailInfo.contract)"
                   >
                     <!-- {{ detailInfo.contract | sliceStr(16) }} -->
-                    {{ address }}
+                  {{ address }}
                   </router-link>
                   <div class="detail-copy" style="margin-left: 10px">
                     <b
@@ -98,7 +98,7 @@
         v-show="activeTab == 1"
         :address="address"
         :tradeCount="detailInfo"
-        table-type="erc721Id"
+        table-type="erc1155Id"
         :token-id="tokenId"
       ></tokens-trade-list>
       <tokens-inventory
@@ -112,9 +112,9 @@
 <script>
 import apiService from '@/services/API-services';
 import tokensTradeList from '@/components/tokens/tokens-trade';
-import tokensInventory from '@/components/tokens/erc1155-tokens-inventory';
+import tokensInventory from '@/components/tokens/tokens1155-inventory';
 export default {
-  name: 'tokens721IdDetailComponent',
+  name: 'tokens1155IdDetailComponent',
   data() {
     return {
       activeTab: 1,
@@ -135,12 +135,13 @@ export default {
   methods: {
     //获取地址信息详情
     getDetail() {
+      
       let param = {
         contract: this.address,
         tokenId: this.tokenId,
       };
       apiService.tokens
-        .token721InventoryDetail(param)
+        .token1155InventoryDetail(param)
         .then((res) => {
           let { errMsg, code, data } = res;
           if (code == 0) {

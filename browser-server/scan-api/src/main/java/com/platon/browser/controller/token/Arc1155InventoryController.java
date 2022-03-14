@@ -13,7 +13,6 @@ import com.platon.browser.response.account.AccountDownload;
 import com.platon.browser.response.token.QueryTokenIdDetailResp;
 import com.platon.browser.response.token.QueryTokenIdListResp;
 import com.platon.browser.service.Token1155Service;
-import com.platon.browser.service.Token721Service;
 import com.platon.browser.utils.I18nUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

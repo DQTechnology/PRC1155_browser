@@ -26,8 +26,6 @@ public abstract class AbstractRedisService<T> {
     @Resource
     protected RedisTemplate<String,String> redisTemplate;
     MinMaxScore minMax= MinMaxScore.builder().build();
-
-
     // 待入库元组列表
     Set<ZSetOperations.TypedTuple<String>> stageSet = new HashSet<>();
     // 本次操作的参数列表中已经在redis中存在的记录score

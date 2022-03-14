@@ -8,7 +8,7 @@ import com.platon.browser.response.BaseResp;
 import com.platon.browser.response.RespPage;
 import com.platon.browser.response.token.QueryTokenDetailResp;
 import com.platon.browser.response.token.QueryTokenListResp;
-import com.platon.browser.service.Token721Service;
+import com.platon.browser.service.TokenService;
 import com.platon.browser.utils.I18nUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +26,7 @@ import javax.validation.Valid;
 public class TokenController {
 
     @Resource
-    private Token721Service tokenService;
+    private TokenService tokenService;
 
     @Resource
     private I18nUtil i18n;

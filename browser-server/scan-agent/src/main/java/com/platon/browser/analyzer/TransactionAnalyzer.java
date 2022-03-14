@@ -1,6 +1,7 @@
 package com.platon.browser.analyzer;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.platon.browser.bean.CollectionTransaction;
 import com.platon.browser.bean.ComplementInfo;
 import com.platon.browser.bean.ErcToken;
@@ -8,6 +9,10 @@ import com.platon.browser.bean.Receipt;
 import com.platon.browser.cache.AddressCache;
 import com.platon.browser.client.PlatOnClient;
 import com.platon.browser.client.SpecialApi;
+import com.platon.browser.dao.entity.Address;
+import com.platon.browser.dao.entity.Token;
+import com.platon.browser.dao.mapper.AddressMapper;
+import com.platon.browser.dao.mapper.TokenMapper;
 import com.platon.browser.decoder.TxInputDecodeResult;
 import com.platon.browser.decoder.TxInputDecodeUtil;
 import com.platon.browser.elasticsearch.dto.Block;
@@ -55,6 +60,12 @@ public class TransactionAnalyzer {
     @Resource
     private ErcTokenAnalyzer ercTokenAnalyzer;
 
+    @Resource
+    private AddressMapper addressMapper;
+
+    @Resource
+    private TokenMapper tokenMapper;
+
     // 交易解析阶段，维护自身的普通合约地址列表，其初始化数据来自地址缓存和erc緩存
     // <普通合约地址,合约类型枚举>
     private static final Map<String, ContractTypeEnum> GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP = new HashMap<>();
@@ -80,6 +91,7 @@ public class TransactionAnalyzer {
             addressCache.getWasmContractAddressCache().forEach(address -> GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.put(address, ContractTypeEnum.WASM));
             ercCache.getErc20AddressCache().forEach(address -> GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.put(address, ContractTypeEnum.ERC20_EVM));
             ercCache.getErc721AddressCache().forEach(address -> GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.put(address, ContractTypeEnum.ERC721_EVM));
+            ercCache.getErc1155AddressCache().forEach(address -> GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.put(address, ContractTypeEnum.ERC1155_EVM));
         }
     }
 
@@ -116,7 +128,7 @@ public class TransactionAnalyzer {
                     contractTypeEnum = ContractTypeEnum.ERC721_EVM;
                 } else if (ercToken.getTypeEnum() == ErcTypeEnum.ERC1155 && txInputDecodeResult.getTypeEnum() == com.platon.browser.elasticsearch.dto.Transaction.TypeEnum.EVM_CONTRACT_CREATE) {
                     contractTypeEnum = ContractTypeEnum.ERC1155_EVM;
-                }else if (txInputDecodeResult.getTypeEnum() == com.platon.browser.elasticsearch.dto.Transaction.TypeEnum.WASM_CONTRACT_CREATE) {
+                } else if (txInputDecodeResult.getTypeEnum() == com.platon.browser.elasticsearch.dto.Transaction.TypeEnum.WASM_CONTRACT_CREATE) {
                     contractTypeEnum = ContractTypeEnum.WASM;
                 } else {
                     contractTypeEnum = ContractTypeEnum.EVM;
@@ -134,7 +146,6 @@ public class TransactionAnalyzer {
 
         // 处理交易信息
         String inputWithoutPrefix = StringUtils.isNotBlank(result.getInput()) ? result.getInput().replace("0x", "") : "";
-
         if (InnerContractAddrEnum.getAddresses().contains(result.getTo()) && StringUtils.isNotBlank(inputWithoutPrefix)) {
             // 如果to地址是内置合约地址，则解码交易输入
             TransactionUtil.resolveInnerContractInvokeTxComplementInfo(result, receipt.getLogs(), ci);
@@ -143,19 +154,19 @@ public class TransactionAnalyzer {
             // to地址为空 或者 contractAddress有值时代表交易为创建合约
             if (StringUtils.isBlank(result.getTo())) {
                 TransactionUtil.resolveGeneralContractCreateTxComplementInfo(result,
-                                                                             receipt.getContractAddress(),
-                                                                             platOnClient,
-                                                                             ci,
-                                                                             log,
-                                                                             GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.get(receipt.getContractAddress()));
+                        receipt.getContractAddress(),
+                        platOnClient,
+                        ci,
+                        log,
+                        GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.get(receipt.getContractAddress()));
                 result.setTo(receipt.getContractAddress());
                 log.info("当前交易[{}]为创建合约,from[{}],to[{}],type为[{}],toType[{}],contractType为[{}]",
-                         result.getHash(),
-                         result.getFrom(),
-                         result.getTo(),
-                         ci.getType(),
-                         ci.getToType(),
-                         ci.getContractType());
+                        result.getHash(),
+                        result.getFrom(),
+                        result.getTo(),
+                        ci.getType(),
+                        ci.getToType(),
+                        ci.getContractType());
             } else {
                 if (GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.containsKey(result.getTo()) && inputWithoutPrefix.length() >= 8) {
                     // 如果是普通合约调用（EVM||WASM）
@@ -166,21 +177,21 @@ public class TransactionAnalyzer {
                     if (result.getStatus() == com.platon.browser.elasticsearch.dto.Transaction.StatusEnum.SUCCESS.getCode()) {
                         // 普通合约调用成功, 取成功的代理PPOS虚拟交易列表
                         List<com.platon.browser.elasticsearch.dto.Transaction> successVirtualTransactions = TransactionUtil.processVirtualTx(collectionBlock,
-                                                                                                                                             specialApi,
-                                                                                                                                             platOnClient,
-                                                                                                                                             result,
-                                                                                                                                             receipt,
-                                                                                                                                             log);
+                                specialApi,
+                                platOnClient,
+                                result,
+                                receipt,
+                                log);
                         // 把成功的虚拟交易挂到当前普通合约交易上
                         result.setVirtualTransactions(successVirtualTransactions);
                     }
                     log.info("当前交易[{}]为普通合约调用,from[{}],to[{}],type为[{}],toType[{}],虚拟交易数为[{}]",
-                             result.getHash(),
-                             result.getFrom(),
-                             result.getTo(),
-                             ci.getType(),
-                             ci.getToType(),
-                             result.getVirtualTransactions().size());
+                            result.getHash(),
+                            result.getFrom(),
+                            result.getTo(),
+                            ci.getType(),
+                            ci.getToType(),
+                            result.getVirtualTransactions().size());
                 } else {
                     BigInteger value = StringUtils.isNotBlank(result.getValue()) ? new BigInteger(result.getValue()) : BigInteger.ZERO;
                     if (value.compareTo(BigInteger.ZERO) >= 0) {
@@ -208,18 +219,17 @@ public class TransactionAnalyzer {
 
         // 交易信息
         result.setGasUsed(receipt.getGasUsed().toString())
-              .setCost(result.decimalGasUsed().multiply(result.decimalGasPrice()).toString())
-              .setFailReason(receipt.getFailReason())
-              .setStatus(status)
-              .setSeq(result.getNum() * 100000 + result.getIndex())
-              .setInfo(ci.getInfo())
-              .setType(ci.getType())
-              .setToType(ci.getToType())
-              .setContractAddress(receipt.getContractAddress())
-              .setContractType(ci.getContractType())
-              .setBin(ci.getBinCode())
-              .setMethod(ci.getMethod());
-
+                .setCost(result.decimalGasUsed().multiply(result.decimalGasPrice()).toString())
+                .setFailReason(receipt.getFailReason())
+                .setStatus(status)
+                .setSeq(result.getNum() * 100000 + result.getIndex())
+                .setInfo(ci.getInfo())
+                .setType(ci.getType())
+                .setToType(ci.getToType())
+                .setContractAddress(receipt.getContractAddress())
+                .setContractType(ci.getContractType())
+                .setBin(ci.getBinCode())
+                .setMethod(ci.getMethod());
         ercTokenAnalyzer.resolveTx(collectionBlock, result, receipt);
 
         // 累加总交易数
@@ -272,17 +282,61 @@ public class TransactionAnalyzer {
         // 累加当前交易的手续费到当前区块的txFee
         String txFee = collectionBlock.decimalTxFee().add(result.decimalCost()).toString();
         log.info("当前区块[{}]交易[{}]:区块累计手续费[{}]=累计手续费[{}]+交易成本[{}](gas燃料[{}] * gas价格[{}])",
-                 collectionBlock.getNum(),
-                 result.getHash(),
-                 txFee,
-                 collectionBlock.decimalTxFee(),
-                 result.decimalCost(),
-                 result.decimalGasUsed(),
-                 result.decimalGasPrice());
+                collectionBlock.getNum(),
+                result.getHash(),
+                txFee,
+                collectionBlock.decimalTxFee(),
+                result.decimalCost(),
+                result.decimalGasUsed(),
+                result.decimalGasPrice());
         collectionBlock.setTxFee(txFee);
         // 累加当前交易的能量限制到当前区块的txGasLimit
         collectionBlock.setTxGasLimit(collectionBlock.decimalTxGasLimit().add(result.decimalGasLimit()).toString());
+        proxyContract(result.getHash());
         return result;
+    }
+
+    /**
+     * 针对特殊合约修改，仅对主网生效
+     *
+     * @param :
+     * @return: void
+     * @date: 2022/2/9
+     */
+    private void proxyContract(String txHash) {
+        // 创建合约后的第一条交易，会设置合约的721属性
+        if ("0x908a9f487a1c9d39a17afe1a868705eec9b0ec899998eb7036412634388755ad".equalsIgnoreCase(txHash)) {
+            Address address = addressMapper.selectByPrimaryKey("lat1w9ys9726hyhqk9yskffgly08xanpzdgqvp2sz6");
+            if (ObjectUtil.isNotNull(address)) {
+                Address newAddress = new Address();
+                newAddress.setAddress(address.getAddress());
+                newAddress.setType(6);
+                addressMapper.updateByPrimaryKeySelective(newAddress);
+                Token token = new Token();
+                token.setAddress("lat1w9ys9726hyhqk9yskffgly08xanpzdgqvp2sz6");
+                token.setType("erc721");
+                token.setName("QPassport");
+                token.setSymbol("QPT");
+                token.setTotalSupply("0");
+                token.setDecimal(0);
+                token.setIsSupportErc165(true);
+                token.setIsSupportErc20(false);
+                token.setIsSupportErc721(true);
+                token.setIsSupportErc721Enumeration(true);
+                token.setIsSupportErc721Metadata(true);
+                token.setTokenTxQty(0);
+                token.setHolder(0);
+                token.setContractDestroyBlock(0L);
+                token.setContractDestroyUpdate(false);
+                tokenMapper.insertSelective(token);
+                // 重置缓存
+                GENERAL_CONTRACT_ADDRESS_2_TYPE_MAP.clear();
+                ercCache.init();
+                addressCache.getEvmContractAddressCache().remove("lat1w9ys9726hyhqk9yskffgly08xanpzdgqvp2sz6");
+            } else {
+                log.error("找不到该代理合约地址{}", "lat1w9ys9726hyhqk9yskffgly08xanpzdgqvp2sz6");
+            }
+        }
     }
 
 }

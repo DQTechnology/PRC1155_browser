@@ -10,11 +10,9 @@ import java.util.Date;
 public class ErcToken extends Token {
     private ErcTypeEnum typeEnum;
     private boolean dirty = false;
-
-    public synchronized void setDirty(boolean bol) {
-        this.dirty = bol;
+    public synchronized void setDirty(boolean bol){
+        this.dirty=bol;
     }
-
     public ErcToken() {
         setTokenTxQty(0);
         setHolder(0);

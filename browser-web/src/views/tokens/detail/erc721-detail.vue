@@ -8,7 +8,7 @@
       <div class="detail-change">
         <div class="detail-copy">
           <span>{{ $t('menu.tokens') }} </span>
-          <i>{{ `${detailInfo.name} (${detailInfo.symbol})` | sliceStr(21) }}</i>
+          <i>{{ `${detailInfo.name} (${detailInfo.symbol})` | sliceStr(50) }}</i>
         </div>
       </div>
       <el-row class="overview-wrap" type="flex" justify="space-between">
@@ -144,19 +144,19 @@ import apiService from '@/services/API-services';
 
 import tokensTradeList from '@/components/tokens/tokens-trade';
 import tokensHolder from '@/components/tokens/tokens-holder';
-import tokensInventory from '@/components/tokens/erc721-tokens-inventory';
+import tokensInventory from '@/components/tokens/tokens-inventory';
 export default {
   name: 'tokens721DetailComponent',
   data() {
     return {
       activeTab: 1,
-      address: '',
+      // address: '',
       detailInfo: {},
       isCopy: false,
       copyText: '',
     };
   },
-  props: ['tokensDetail'],
+  props: ['tokensDetail', 'address'],
   computed: {},
   watch: {},
   components: {
@@ -214,7 +214,7 @@ export default {
   },
   //生命周期函数
   created() {
-    this.address = this.$route.query.address.toLowerCase();
+    // this.address = this.$route.query.address.toLowerCase();
     if (this.tokensDetail) {
       this.detailInfo = this.tokensDetail;
     } else {

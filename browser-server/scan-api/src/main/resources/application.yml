@@ -1,6 +1,8 @@
+
 spring:
   profiles:
     active: platon
+
 
 #日志配置
 logging:

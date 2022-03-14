@@ -8,7 +8,7 @@
       <div class="detail-change">
         <div class="detail-copy">
           <span>{{ $t('menu.tokens') }} </span>
-          <i @click="goTokenDetail(detailInfo.contract, 'erc721')" style="cursor: pointer">{{ `${detailInfo.tokenName} (${detailInfo.symbol})` | sliceStr(21) }}</i>
+          <i @click="goTokenDetail(detailInfo.contract, 'erc721')" style="cursor: pointer">{{ `${detailInfo.tokenName} (${detailInfo.symbol})` | sliceStr(50) }}</i>
         </div>
       </div>
       <el-row class="overview-wrap" type="flex" justify="space-between">
@@ -112,20 +112,20 @@
 <script>
 import apiService from '@/services/API-services';
 import tokensTradeList from '@/components/tokens/tokens-trade';
-import tokensInventory from '@/components/tokens/erc721-tokens-inventory';
+import tokensInventory from '@/components/tokens/tokens-inventory';
 export default {
   name: 'tokens721IdDetailComponent',
   data() {
     return {
       activeTab: 1,
-      address: '',
+      // address: '',
       tokenId: '',
       detailInfo: {},
       isCopy: false,
       copyText: '',
     };
   },
-  props: ['tokensDetail'],
+  props: ['tokensDetail', 'address'],
   computed: {},
   watch: {},
   components: {
@@ -183,7 +183,7 @@ export default {
   },
   //生命周期函数
   created() {
-    this.address = this.$route.query.address.toLowerCase();
+    // this.address = this.$route.query.address.toLowerCase();
     this.tokenId = this.$route.query.id;
     if (this.tokensDetail) {
       this.detailInfo = this.tokensDetail;

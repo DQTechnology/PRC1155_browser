@@ -9,21 +9,45 @@ public class TxBak {
 
     private String hash;
 
-    private Integer txType;
+    private String bHash;
 
     private Long num;
 
-    private String fromAddress;
+    private Integer index;
 
-    private String toAddress;
+    private Date time;
+
+    private String nonce;
+
+    private Integer status;
+
+    private String gasPrice;
+
+    private String gasUsed;
+
+    private String gasLimit;
+
+    private String from;
+
+    private String to;
+
+    private String value;
+
+    private Integer type;
+
+    private String cost;
+
+    private Integer toType;
+
+    private Long seq;
+
+    private Date creTime;
+
+    private Date updTime;
+
+    private Integer contractType;
 
     private String contractAddress;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-    private String info;
 
     public Long getId() {
         return id;
@@ -41,12 +65,12 @@ public class TxBak {
         this.hash = hash == null ? null : hash.trim();
     }
 
-    public Integer getTxType() {
-        return txType;
+    public String getbHash() {
+        return bHash;
     }
 
-    public void setTxType(Integer txType) {
-        this.txType = txType;
+    public void setbHash(String bHash) {
+        this.bHash = bHash == null ? null : bHash.trim();
     }
 
     public Long getNum() {
@@ -57,20 +81,140 @@ public class TxBak {
         this.num = num;
     }
 
-    public String getFromAddress() {
-        return fromAddress;
+    public Integer getIndex() {
+        return index;
     }
 
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress == null ? null : fromAddress.trim();
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
-    public String getToAddress() {
-        return toAddress;
+    public Date getTime() {
+        return time;
     }
 
-    public void setToAddress(String toAddress) {
-        this.toAddress = toAddress == null ? null : toAddress.trim();
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce == null ? null : nonce.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(String gasPrice) {
+        this.gasPrice = gasPrice == null ? null : gasPrice.trim();
+    }
+
+    public String getGasUsed() {
+        return gasUsed;
+    }
+
+    public void setGasUsed(String gasUsed) {
+        this.gasUsed = gasUsed == null ? null : gasUsed.trim();
+    }
+
+    public String getGasLimit() {
+        return gasLimit;
+    }
+
+    public void setGasLimit(String gasLimit) {
+        this.gasLimit = gasLimit == null ? null : gasLimit.trim();
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from == null ? null : from.trim();
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to == null ? null : to.trim();
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value == null ? null : value.trim();
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost == null ? null : cost.trim();
+    }
+
+    public Integer getToType() {
+        return toType;
+    }
+
+    public void setToType(Integer toType) {
+        this.toType = toType;
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public void setSeq(Long seq) {
+        this.seq = seq;
+    }
+
+    public Date getCreTime() {
+        return creTime;
+    }
+
+    public void setCreTime(Date creTime) {
+        this.creTime = creTime;
+    }
+
+    public Date getUpdTime() {
+        return updTime;
+    }
+
+    public void setUpdTime(Date updTime) {
+        this.updTime = updTime;
+    }
+
+    public Integer getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(Integer contractType) {
+        this.contractType = contractType;
     }
 
     public String getContractAddress() {
@@ -79,30 +223,6 @@ public class TxBak {
 
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress == null ? null : contractAddress.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info == null ? null : info.trim();
     }
 
     /**
@@ -115,14 +235,36 @@ public class TxBak {
     public enum Column {
         id("id", "id", "BIGINT", false),
         hash("hash", "hash", "VARCHAR", false),
-        txType("tx_type", "txType", "INTEGER", false),
+        bHash("b_hash", "bHash", "VARCHAR", false),
         num("num", "num", "BIGINT", false),
-        fromAddress("from_address", "fromAddress", "VARCHAR", false),
-        toAddress("to_address", "toAddress", "VARCHAR", false),
+        index("index", "index", "INTEGER", true),
+        time("time", "time", "TIMESTAMP", true),
+        nonce("nonce", "nonce", "VARCHAR", false),
+        status("status", "status", "INTEGER", true),
+        gasPrice("gas_price", "gasPrice", "VARCHAR", false),
+        gasUsed("gas_used", "gasUsed", "VARCHAR", false),
+        gasLimit("gas_limit", "gasLimit", "VARCHAR", false),
+        from("from", "from", "VARCHAR", true),
+        to("to", "to", "VARCHAR", true),
+        value("value", "value", "VARCHAR", true),
+        type("type", "type", "INTEGER", true),
+        cost("cost", "cost", "VARCHAR", false),
+        toType("to_type", "toType", "INTEGER", false),
+        seq("seq", "seq", "BIGINT", false),
+        creTime("cre_time", "creTime", "TIMESTAMP", false),
+        updTime("upd_time", "updTime", "TIMESTAMP", false),
+        contractType("contract_type", "contractType", "INTEGER", false),
         contractAddress("contract_address", "contractAddress", "VARCHAR", false),
-        createTime("create_time", "createTime", "TIMESTAMP", false),
-        updateTime("update_time", "updateTime", "TIMESTAMP", false),
-        info("info", "info", "LONGVARCHAR", false);
+        input("input", "input", "LONGVARCHAR", true),
+        info("info", "info", "LONGVARCHAR", false),
+        erc1155TxInfo("erc1155_tx_info", "erc1155TxInfo", "LONGVARCHAR", false),
+        erc721TxInfo("erc721_tx_info", "erc721TxInfo", "LONGVARCHAR", false),
+        erc20TxInfo("erc20_tx_info", "erc20TxInfo", "LONGVARCHAR", false),
+        transferTxInfo("transfer_tx_info", "transferTxInfo", "LONGVARCHAR", false),
+        pposTxInfo("ppos_tx_info", "pposTxInfo", "LONGVARCHAR", false),
+        failReason("fail_reason", "failReason", "LONGVARCHAR", false),
+        method("method", "method", "LONGVARCHAR", true),
+        bin("bin", "bin", "LONGVARCHAR", false);
 
         /**
          * This field was generated by MyBatis Generator.

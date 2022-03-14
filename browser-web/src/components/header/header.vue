@@ -24,7 +24,7 @@
         <el-menu-item
           index="/node"
           :class="{
-            active: $route.path.indexOf('node') > -1
+            active: $route.path.indexOf('node') > -1,
           }"
         >
           <router-link to="/node">{{ $t('menu.validator') }}</router-link>
@@ -44,21 +44,24 @@
                 active:
                   $route.path.indexOf('block') > -1 ||
                   $route.path.indexOf('trade') > -1 ||
-                  $route.path.indexOf('/address') > -1
+                  $route.path.indexOf('/address') > -1,
               }"
-            >
-              {{ $t('menu.blockChain') }}
+              >{{ $t('menu.blockChain') }}
               <i
                 :class="{
                   arrowDown: blockDropdownShow == false,
-                  arrowUp: blockDropdownShow == true
+                  arrowUp: blockDropdownShow == true,
                 }"
                 class="arrow el-icon-arrow-down arrowUp"
               ></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="/block/index">{{ $t('menu.block') }}</el-dropdown-item>
-              <el-dropdown-item command="/block/trade">{{ $t('menu.transaction') }}</el-dropdown-item>
+              <el-dropdown-item command="/block/index">{{
+                $t('menu.block')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/block/trade">{{
+                $t('menu.transaction')
+              }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-menu-item>
@@ -73,33 +76,39 @@
             <span
               class="el-dropdown-link more-title"
               :class="{
-                active: $route.path.indexOf('tokens') > -1
+                active: $route.path.indexOf('tokens') > -1,
               }"
-            >
-              {{ $t('menu.tokens') }}
+              >{{ $t('menu.tokens') }}
               <i
                 :class="{
                   arrowDown: tokensDropdownShow == false,
-                  arrowUp: tokensDropdownShow == true
+                  arrowUp: tokensDropdownShow == true,
                 }"
                 class="arrow el-icon-arrow-down arrowUp"
               ></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="/tokens/tokensList/prc20">{{ $t('menu.erc20Tokens') }}</el-dropdown-item>
-              <el-dropdown-item command="/tokens/tokensTranfer/prc20">{{ $t('menu.erc20Transfer') }}</el-dropdown-item>
+              <el-dropdown-item command="/tokens/tokensList/prc20">{{
+                $t('menu.erc20Tokens')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/tokens/tokensTranfer/prc20">{{
+                $t('menu.erc20Transfer')
+              }}</el-dropdown-item>
+              <div class="dividing-line"></div>
+              <el-dropdown-item command="/tokens/tokensList/prc721">{{
+                $t('menu.erc721Tokens')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/tokens/tokensTranfer/prc721">{{
+                $t('menu.erc721Transfer')
+              }}</el-dropdown-item>
 
               <div class="dividing-line"></div>
-              <el-dropdown-item command="/tokens/tokensList/prc721">{{ $t('menu.erc721Tokens') }}</el-dropdown-item>
-              <el-dropdown-item command="/tokens/tokensTranfer/prc721">
-                {{ $t('menu.erc721Transfer') }}
-              </el-dropdown-item>
-              
-              <div class="dividing-line"></div>
-              <el-dropdown-item command="/tokens/tokensList/prc1155">{{ $t('menu.erc1155Tokens') }}</el-dropdown-item>
-              <el-dropdown-item command="/tokens/tokensTranfer/prc1155">
-                {{ $t('menu.erc1155Transfer') }}
-              </el-dropdown-item>
+              <el-dropdown-item command="/tokens/tokensList/prc1155">{{ 
+                $t('menu.erc1155Tokens') 
+                }}</el-dropdown-item>
+              <el-dropdown-item command="/tokens/tokensTranfer/prc1155">{{ 
+                $t('menu.erc1155Transfer') 
+                }} </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-menu-item>
@@ -120,25 +129,31 @@
             <span
               class="el-dropdown-link more-title"
               :class="{
-                active:
-                  $route.path.indexOf('governable-parameter') > -1 ||
-                  $route.path.indexOf('proposal') > -1 ||
-                  $route.path.indexOf('/foundation-address') > -1
+                active: 
+                  ['/proposal', '/governable-parameter', '/foundation-address', '/add-to-extension'].includes($route.path)
               }"
-            >
-              {{ $t('menu.more') }}
+              >{{ $t('menu.more') }}
               <i
                 :class="{
                   arrowDown: moreDropdownShow == false,
-                  arrowUp: moreDropdownShow == true
+                  arrowUp: moreDropdownShow == true,
                 }"
                 class="arrow el-icon-arrow-down arrowUp"
               ></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="/proposal">{{ $t('menu.proposal') }}</el-dropdown-item>
-              <el-dropdown-item command="/governable-parameter">{{ $t('more.governableParameter') }}</el-dropdown-item>
-              <el-dropdown-item command="/foundation-address">{{ $t('more.foundationAddress') }}</el-dropdown-item>
+              <el-dropdown-item command="/proposal">{{
+                $t('menu.proposal')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/governable-parameter">{{
+                $t('more.governableParameter')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/foundation-address">{{
+                $t('more.foundationAddress')
+              }}</el-dropdown-item>
+              <el-dropdown-item command="/add-to-extension">{{
+                $t('more.addToExtension')
+              }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-menu-item>
@@ -149,7 +164,7 @@
       class="search search-header"
       :class="{
         'search-active': isFocus,
-        'search-hide': !hideSearch || $route.path != '/'
+        'search-hide': !hideSearch || $route.path != '/',
       }"
       v-if="windowWidth >= 750"
     >
@@ -167,9 +182,8 @@
         :class="{ 'search-btn-active': isFocus }"
         @click="searchFn"
         :disabled="disabledBtn"
+        >{{ $t('search.searchBtn') }}</el-button
       >
-        {{ $t('search.searchBtn') }}
-      </el-button>
     </div>
     <div class="right-most">
       <el-dropdown placement="bottom-start" @visible-change="netVisibleChange">
@@ -178,7 +192,7 @@
           <i
             :class="{
               arrowDown: netDropdownShow == false,
-              arrowUp: netDropdownShow == true
+              arrowUp: netDropdownShow == true,
             }"
             class="arrow el-icon-arrow-down arrowUp"
           ></i>
@@ -189,31 +203,41 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dropdown @command="handleCommandLangage" placement="bottom-start" @visible-change="LangVisibleChange">
+      <el-dropdown
+        @command="handleCommandLangage"
+        placement="bottom-start"
+        @visible-change="LangVisibleChange"
+      >
         <span class="el-dropdown-link">
           {{ languageObj[language] == '简体中文' ? '简体中文' : 'English' }}
           <i
             :class="{
               arrowDown: langDropdownShow == false,
-              arrowUp: langDropdownShow == true
+              arrowUp: langDropdownShow == true,
             }"
             class="arrow el-icon-arrow-down arrowUp"
           ></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item, index) in options" :key="index" :command="item.value">
-            {{ item.label }}
-          </el-dropdown-item>
+          <el-dropdown-item
+            v-for="(item, index) in options"
+            :key="index"
+            :command="item.value"
+            >{{ item.label }}</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
       <span class="mobile-menu-btn">
-        <img src="/static/images/icon_menu.svg" @click="toggleMobileMenuOpenend" />
+        <img
+          src="/static/images/icon_menu.svg"
+          @click="toggleMobileMenuOpenend"
+        />
       </span>
     </div>
     <div
       class="search search-header mobile-search"
       :class="{
-        'search-active': isFocus
+        'search-active': isFocus,
       }"
       v-if="windowWidth < 750 && $route.path != '/'"
     >
@@ -231,11 +255,13 @@
         :class="{ 'search-btn-active': isFocus }"
         @click="searchFn"
         :disabled="disabledBtn"
+        >{{ $t('search.searchBtn') }}</el-button
       >
-        {{ $t('search.searchBtn') }}
-      </el-button>
     </div>
-    <div :class="{ mobileMenuWrapper: true, opened: mobileMenuOpenend }" v-if="windowWidth < 750">
+    <div
+      :class="{ mobileMenuWrapper: true, opened: mobileMenuOpenend }"
+      v-if="windowWidth < 750"
+    >
       <div class="mobile-menu-back" @click="toggleMobileMenuOpenend"></div>
       <div class="mobile-menu-content">
         <el-menu
@@ -246,14 +272,18 @@
           text-color="#121f38"
           active-text-color="#121f38"
         >
-          <el-menu-item @click="toggleMobileMenuOpenend" index="/" :class="{ active: $route.path == '/' }">
+          <el-menu-item
+            @click="toggleMobileMenuOpenend"
+            index="/"
+            :class="{ active: $route.path == '/' }"
+          >
             <router-link to="/">{{ $t('menu.home') }}</router-link>
           </el-menu-item>
           <el-menu-item
             @click="toggleMobileMenuOpenend"
             index="/node"
             :class="{
-              active: $route.path.indexOf('node') > -1
+              active: $route.path.indexOf('node') > -1,
             }"
           >
             <router-link to="/node">{{ $t('menu.validator') }}</router-link>
@@ -268,14 +298,18 @@
                 @click="toggleMobileMenuOpenend"
                 :class="{ active: $route.path == '/block/index' }"
               >
-                <router-link to="/block/index">{{ $t('menu.block') }}</router-link>
+                <router-link to="/block/index">{{
+                  $t('menu.block')
+                }}</router-link>
               </el-menu-item>
               <el-menu-item
                 index="/block/trade"
                 @click="toggleMobileMenuOpenend"
                 :class="{ active: $route.path == '/block/trade' }"
               >
-                <router-link to="/block/trade">{{ $t('menu.transaction') }}</router-link>
+                <router-link to="/block/trade">{{
+                  $t('menu.transaction')
+                }}</router-link>
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -289,35 +323,42 @@
                 @click="toggleMobileMenuOpenend"
                 :class="{ active: $route.path == '/tokens/tokensList/prc20' }"
               >
-                <router-link to="/tokens/tokensList/prc20">{{ $t('menu.erc20Tokens') }}</router-link>
+                <router-link to="/tokens/tokensList/prc20">{{
+                  $t('menu.erc20Tokens')
+                }}</router-link>
               </el-menu-item>
               <el-menu-item
                 index="/tokens/tokensTranfer/prc20"
                 @click="toggleMobileMenuOpenend"
                 :class="{
-                  active: $route.path == '/tokens/tokensTranfer/prc20'
+                  active: $route.path == '/tokens/tokensTranfer/prc20',
                 }"
               >
-                <router-link to="/tokens/tokensTranfer/prc20">{{ $t('menu.erc20Transfer') }}</router-link>
+                <router-link to="/tokens/tokensTranfer/prc20">{{
+                  $t('menu.erc20Transfer')
+                }}</router-link>
               </el-menu-item>
-
               <el-menu-item
                 index="/tokens/tokensList/prc721"
                 @click="toggleMobileMenuOpenend"
                 :class="{ active: $route.path == '/tokens/tokensList/prc721' }"
               >
-                <router-link to="/tokens/tokensList/prc721">{{ $t('menu.erc721Tokens') }}</router-link>
+                <router-link to="/tokens/tokensList/prc721">{{
+                  $t('menu.erc721Tokens')
+                }}</router-link>
               </el-menu-item>
               <el-menu-item
                 index="/tokens/tokensTranfer/prc721"
                 @click="toggleMobileMenuOpenend"
                 :class="{
-                  active: $route.path == '/tokens/tokensTranfer/prc721'
+                  active: $route.path == '/tokens/tokensTranfer/prc721',
                 }"
               >
-                <router-link to="/tokens/tokensTranfer/prc721">{{ $t('menu.erc721Transfer') }}</router-link>
+                <router-link to="/tokens/tokensTranfer/prc721">{{
+                  $t('menu.erc721Transfer')
+                }}</router-link>
               </el-menu-item>
-
+              
               <el-menu-item
                 index="/tokens/tokensList/prc1155"
                 @click="toggleMobileMenuOpenend"
@@ -347,21 +388,36 @@
                 index="/proposal"
                 :class="{ active: $route.path == '/proposal' }"
               >
-                <router-link to="/proposal">{{ $t('menu.proposal') }}</router-link>
+                <router-link to="/proposal">{{
+                  $t('menu.proposal')
+                }}</router-link>
               </el-menu-item>
               <el-menu-item
                 @click="toggleMobileMenuOpenend"
                 index="/governable-parameter"
                 :class="{ active: $route.path == '/governable-parameter' }"
               >
-                <router-link to="/governable-parameter">{{ $t('more.governableParameter') }}</router-link>
+                <router-link to="/governable-parameter">{{
+                  $t('more.governableParameter')
+                }}</router-link>
               </el-menu-item>
               <el-menu-item
                 @click="toggleMobileMenuOpenend"
                 index="/foundation-address"
                 :class="{ active: $route.path == '/foundation-address' }"
               >
-                <router-link to="/foundation-address">{{ $t('more.foundationAddress') }}</router-link>
+                <router-link to="/foundation-address">{{
+                  $t('more.foundationAddress')
+                }}</router-link>
+              </el-menu-item>
+              <el-menu-item
+                @click="toggleMobileMenuOpenend"
+                index="/add-to-extension"
+                :class="{ active: $route.path == '/add-to-extension' }"
+              >
+                <router-link to="/add-to-extension">{{
+                  $t('more.addToExtension')
+                }}</router-link>
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -382,12 +438,14 @@
             :key="index"
             :class="{
               languageItem: true,
-              active: languageObj[language] == item.label
+              active: languageObj[language] == item.label,
             }"
           >
-            <span class="language-text" @click="handleCommandLangage(item.value)">
-              {{ item.label === '简体中文' ? '中' : 'En' }}
-            </span>
+            <span
+              class="language-text"
+              @click="handleCommandLangage(item.value)"
+              >{{ item.label === '简体中文' ? '中' : 'En' }}</span
+            >
             <span class="language-divider">/</span>
           </div>
         </div>
@@ -397,12 +455,12 @@
 </template>
 
 <script>
-import apiService from '@/services/API-services'
-import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
-import store from '@/vuex/store'
-import { toBech32Address, isAddress } from '@/services/web3-utils'
+import apiService from '@/services/API-services';
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+import store from '@/vuex/store';
+import { toBech32Address, isAddress } from '@/services/web3-utils';
 
-let configRetryTime = 1000
+let configRetryTime = 1000;
 export default {
   name: '',
   data() {
@@ -422,34 +480,36 @@ export default {
       chainList: [
         {
           en: 'Alaya',
-          zh: 'Alaya'
-        }
+          zh: 'Alaya',
+        },
       ],
       options: [
         {
           value: 'zh-cn',
-          label: '简体中文'
+          label: '简体中文',
         },
         {
           value: 'en',
-          label: 'English'
-        }
+          label: 'English',
+        },
       ],
       languageObj: {
         'zh-cn': '简体中文',
-        en: 'English'
+        en: 'English',
       },
-      isFocus: false
-    }
+      isFocus: false,
+    };
   },
   computed: {
     ...mapGetters(['chainId', 'chainHttp', 'hideSearch', 'configData']),
     lang() {
-      return this.$i18n.locale.indexOf('zh') !== -1 ? 'zh' : 'en'
+      return this.$i18n.locale.indexOf('zh') !== -1 ? 'zh' : 'en';
     },
     logoURL() {
-      return this.configData.logo ? process.env.VUE_APP_API_ROOT + this.configData.logo : '#'
-    }
+      return this.configData.logo
+        ? process.env.VUE_APP_API_ROOT + this.configData.logo
+        : '#';
+    },
   },
   watch: {},
   components: {},
@@ -457,258 +517,151 @@ export default {
   methods: {
     ...mapActions(['changeChainId', 'updateConfigData']),
     getConfig() {
-      let config = {
-        context: '/browser-server',
-        siteName: 'PlatScan',
-        headerChainName: 'PlatON Mainnet',
-        chainName: 'PlatON',
-        copyRight: 'PlatON',
-        logo: '/images/logo.svg',
-        links: [
-          {
-            order: 0,
-            name: { cn: '关于PlatON', en: 'About PlatON' },
-            logo: '',
-            url: { cn: 'https://www.platon.network', en: 'https://www.platon.network/en' }
-          },
-          {
-            order: 1,
-            name: { cn: '白皮书1.0', en: 'White Paper1.0' },
-            logo: '',
-            url: {
-              cn:
-                'https://www.platon.network/pdf/zh/PlatON_A_High-Efficiency_Trustless_Computing_Network_Whitepaper_ZH.pdf',
-              en:
-                'https://www.platon.network/pdf/en/PlatON_A_High-Efficiency_Trustless_Computing_Network_Whitepaper_EN.pdf'
-            }
-          },
-          {
-            order: 2,
-            name: { cn: '白皮书2.0', en: 'White Paper2.0' },
-            logo: '',
-            url: {
-              cn:
-                'https://www.platon.network/pdf/zh/PlatON_A_High-Efficiency_Trustless_Computing_Network_Whitepaper_ZH_2.pdf',
-              en:
-                'https://www.platon.network/pdf/en/PlatON_A_High-Efficiency_Trustless_Computing_Network_Whitepaper_EN_2.pdf'
-            }
-          },
-          {
-            order: 3,
-            name: { cn: 'ATON钱包下载', en: 'ATON Download' },
-            logo: '',
-            url: { cn: 'https://www.platon.network/developer#aton', en: 'https://www.platon.network/en/developer#aton' }
-          },
-          {
-            order: 4,
-            name: { cn: '开发者帮助', en: 'Developer' },
-            logo: '',
-            url: { cn: 'https://devdocs.platon.network/docs/zh-CN/', en: 'https://devdocs.platon.network/docs/en/' }
-          }
-        ],
-        social: [
-          {
-            order: 0,
-            name: 'telegram',
-            logo: '',
-            url: { cn: 'https://t.me/PlatONNetworkCN', en: 'https://t.me/PlatONNetwork' }
-          },
-          {
-            order: 1,
-            name: 'wechat',
-            logo: '',
-            qrcode: '/images/wechat.jpg',
-            url: { cn: '', en: '' }
-          },
-          {
-            order: 2,
-            name: 'twitter',
-            logo: '',
-            url: { cn: 'https://twitter.com/PlatON_Network', en: 'https://twitter.com/PlatON_Network' }
-          },
-          {
-            order: 3,
-            name: 'reddit',
-            logo: '',
-            url: { cn: 'https://www.reddit.com/user/PlatON_Network', en: 'https://www.reddit.com/user/PlatON_Network' }
-          },
-          {
-            order: 4,
-            name: 'medium',
-            logo: '',
-            url: { cn: 'https://platon-network.medium.com', en: 'https://platon-network.medium.com' }
-          },
-          {
-            order: 5,
-            name: 'github',
-            logo: '',
-            url: { cn: 'https://github.com/PlatONnetwork', en: 'https://github.com/PlatONnetwork' }
-          },
-          {
-            order: 6,
-            name: 'linkedin',
-            logo: '',
-            url: {
-              cn: 'https://www.linkedin.com/company/platonnetwork/',
-              en: 'https://www.linkedin.com/company/platonnetwork/'
-            }
-          },
-          {
-            order: 7,
-            name: 'facebook',
-            logo: '',
-            url: { cn: 'https://www.facebook.com/PlatONNetwork/', en: 'https://www.facebook.com/PlatONNetwork/' }
-          },
-          {
-            order: 8,
-            name: 'bihu',
-            logo: '',
-            url: { cn: 'https://bihu.com/people/1215832888', en: 'https://bihu.com/people/1215832888' }
-          },
-          {
-            order: 9,
-            name: 'chainnode',
-            logo: '',
-            url: { cn: 'https://www.chainnode.com/forum/267', en: 'https://www.chainnode.com/forum/267' }
-          }
-        ]
-      }
-      let sortByOrder = (a, b) => a.order - b.order
-      config.links.sort(sortByOrder)
-      config.social.sort(sortByOrder)
-      this.updateConfigData(config)
 
-      // let flag = true;
-      // apiService.more
-      //   .globalConfig({ v: Date.now() })
-      //   .then((res) => {
-      //     flag = false;
-      //     let sortByOrder = (a, b) => a.order - b.order;
-      //     res.links.sort(sortByOrder);
-      //     res.social.sort(sortByOrder);
-      //     this.updateConfigData(res);
-      //   })
-      //   .catch((err) => {
-      //     console.error('err: ', err);
-      //     configRetryTime = Math.ceil(configRetryTime * 1.2);
-      //     if (flag) {
-      //       setTimeout(this.getConfig, configRetryTime);
-      //     }
-      //   });
+      let flag = true;
+      apiService.more
+        .globalConfig({ v: Date.now() })
+        .then((res) => {
+          flag = false;
+          let sortByOrder = (a, b) => a.order - b.order;
+          res.links.sort(sortByOrder);
+          res.social.sort(sortByOrder);
+          this.updateConfigData(res);
+        })
+        .catch((err) => {
+          console.error('err: ', err);
+          configRetryTime = Math.ceil(configRetryTime * 1.2);
+          if (flag) {
+            setTimeout(this.getConfig, configRetryTime);
+          }
+        });
+
+
     },
     toggleMobileMenuOpenend() {
-      this.mobileMenuOpenend = !this.mobileMenuOpenend
+      this.mobileMenuOpenend = !this.mobileMenuOpenend;
     },
     netVisibleChange(boolean) {
-      this.netDropdownShow = boolean
+      this.netDropdownShow = boolean;
     },
     blockDropdownChangHandle(boolean) {
-      this.blockDropdownShow = boolean
+      this.blockDropdownShow = boolean;
     },
     tokensDropdownChangHandle(boolean) {
-      this.tokensDropdownShow = boolean
+      this.tokensDropdownShow = boolean;
     },
     moreDropdownChangHandle(boolean) {
-      this.moreDropdownShow = boolean
+      this.moreDropdownShow = boolean;
     },
     goIndex() {
-      this.$router.push('/')
+      this.$router.push('/');
     },
     visibleChange1(val) {
       if (val) {
-        this.iconClass1 = 'el-icon-arrow-up'
+        this.iconClass1 = 'el-icon-arrow-up';
       } else {
-        this.iconClass1 = 'el-icon-arrow-down'
+        this.iconClass1 = 'el-icon-arrow-down';
       }
     },
     LangVisibleChange(boolean) {
-      this.langDropdownShow = boolean
+      this.langDropdownShow = boolean;
     },
     getNetObj(id) {
-      console.warn('首次id》》》', id)
+      console.warn('首次id》》》', id);
       let arr = this.chainList.filter((item, index) => {
-        return item.cid == id
-      })
+        return item.cid == id;
+      });
       // let arr = sessionStorage.getItem('chainList').filter((item,index)=>{
       //     return item.cid == id
       // })
       // debugger
       if (!arr.length) {
-        return ''
+        return '';
       }
-      let arr1 = arr[0]
-      console.warn('首次net》》》', arr1['en'])
-      return arr1['en']
+      let arr1 = arr[0];
+      console.warn('首次net》》》', arr1['en']);
+      return arr1['en'];
     },
     handleCommand(command) {
-      console.log('网络切换》》》', command)
-      store.commit('CHANGE_ID', command)
+      console.log('网络切换》》》', command);
+      store.commit('CHANGE_ID', command);
       let arr = this.chainList.filter((item, index) => {
-        return item.cid == command
-      })
-      store.commit('CHANGE_HTTP', arr[0].http)
-      store.commit('CHANGE_CONTEXT', arr[0].context)
+        return item.cid == command;
+      });
+      store.commit('CHANGE_HTTP', arr[0].http);
+      store.commit('CHANGE_CONTEXT', arr[0].context);
       //切换网络之后，将当前网络存在sessionStorage
-      sessionStorage.setItem('commandId', command)
-      sessionStorage.setItem('commandHttp', arr[0].http)
-      sessionStorage.setItem('commandContext', arr[0].context)
-      localStorage.setItem('commandContext', arr[0].context)
-      localStorage.setItem('cid', command)
+      sessionStorage.setItem('commandId', command);
+      sessionStorage.setItem('commandHttp', arr[0].http);
+      sessionStorage.setItem('commandContext', arr[0].context);
+      localStorage.setItem('commandContext', arr[0].context);
+      localStorage.setItem('cid', command);
       this.$router.push({
-        path: '/'
-      })
+        path: '/',
+      });
     },
     handleCommandLangage(command) {
-      this.toggleMobileMenuOpenend()
-      console.warn('command>>>>', command)
-      this.$i18n.locale = command
-      this.language = command
-      window.i18nLocale = command
-      localStorage.setItem('i18nLocale', command)
+      this.toggleMobileMenuOpenend();
+      console.warn('command>>>>', command);
+      this.$i18n.locale = command;
+      this.language = command;
+      window.i18nLocale = command;
+      localStorage.setItem('i18nLocale', command);
 
       // 处理交易失败提示语的语言切换，需要重新请求接口
-      const path = this.$route.path
-      if (path == '/block/trade' || path == '/address-detail' || path == '/block-detail' || path == '/trade-detail') {
-        this.reload()
+      const path = this.$route.path;
+      if (
+        path == '/block/trade' ||
+        path == '/address-detail' ||
+        path == '/block-detail' ||
+        path == '/trade-detail'
+      ) {
+        this.reload();
       }
       // this.$i18n.locale = localStorage.getItem('i18nLocale')
     },
     //查询
     searchFn() {
-      this.disabledBtn = true
-      let param = this.searchKey.trim()
-      let isHEX = false
-      if (isAddress(param)) {
-        isHEX = param
-        param = toBech32Address(process.env.VUE_APP_ADR_PREV, param)
+      let param = this.searchKey.trim();
+      if (!param) {
+        return
       }
+      let isHEX = false;
+      if (/^(0x)[\da-f]{40}|$|^(atp|lat)[\da-f]{39}$/i.test(param)) {
+        param = param.toLowerCase()
+      }
+      if (isAddress(param)) {
+        isHEX = param;
+        param = toBech32Address(process.env.VUE_APP_ADR_PREV, param);
+      }
+      this.disabledBtn = true;
       apiService.search
         .query({ parameter: param })
-        .then(res => {
-          let { errMsg, code, data } = res
+        .then((res) => {
+          let { errMsg, code, data } = res;
 
-          this.searchKey = ''
+          this.searchKey = '';
           if (code == 0) {
             //根据type不同进入不同的详情页
             if (!data.type) {
-              this.$message.warning(this.$t('indexInfo.searchno'))
+              this.$message.warning(this.$t('indexInfo.searchno'));
             } else {
               if (isHEX && data.struct.address) {
-                data.struct.address = isHEX
+                data.struct.address = isHEX;
               }
-              this.switchFn(data.type, data.struct)
+              this.switchFn(data.type, data.struct);
             }
           } else {
-            this.$message.warning(this.$t('indexInfo.searchno'))
+            this.$message.warning(this.$t('indexInfo.searchno'));
           }
         })
-        .catch(error => {
-          this.searchKey = ''
-          this.$message.error(error)
+        .catch((error) => {
+          this.searchKey = '';
+          this.$message.error(error);
         })
-      setTimeout(() => {
-        this.disabledBtn = false
-      }, 2000)
+        .finally(() => {
+          this.disabledBtn = false;
+        });
     },
     switchFn(type, struct) {
       switch (type) {
@@ -717,13 +670,13 @@ export default {
           this.$router.push({
             path: '/block-detail',
             query: {
-              height: struct.number
-            }
-          })
+              height: struct.number,
+            },
+          });
           if (this.$route.path == '/block-detail') {
-            this.reload()
+            this.reload();
           }
-          break
+          break;
         //交易详情
         case 'transaction':
           // let path = ''
@@ -731,49 +684,49 @@ export default {
           this.$router.push({
             path: '/trade-detail',
             query: {
-              txHash: struct.txHash
-            }
-          })
+              txHash: struct.txHash,
+            },
+          });
           if (this.$route.path == '/trade-detail') {
-            this.reload()
+            this.reload();
           }
-          break
+          break;
         //节点详情
         case 'staking':
           this.$router.push({
             path: '/node-detail',
             query: {
-              address: struct.nodeId
-            }
-          })
+              address: struct.nodeId,
+            },
+          });
           if (this.$route.path == '/node-detail') {
-            this.reload()
+            this.reload();
           }
-          break
+          break;
         //地址详情==(钱包地址详情)
         case 'address':
           this.$router.push({
             path: '/address-detail',
             query: {
-              address: struct.address
-            }
-          })
+              address: struct.address,
+            },
+          });
           if (this.$route.path == '/address-detail') {
-            this.reload()
+            this.reload();
           }
-          break
+          break;
         //合约详情
         case 'contract':
           this.$router.push({
             path: '/contract-detail',
             query: {
-              address: struct.address
-            }
-          })
+              address: struct.address,
+            },
+          });
           if (this.$route.path == '/contract-detail') {
-            this.reload()
+            this.reload();
           }
-          break
+          break;
       }
     },
     // 更多 选项选中事件
@@ -782,17 +735,17 @@ export default {
         path: command,
         query: {
           //   address: address
-        }
-      })
-    }
+        },
+      });
+    },
   },
   //生命周期函数
   created() {
-    this.language = this.$i18n.locale.indexOf('zh') !== -1 ? 'zh-cn' : 'en'
-    this.getConfig()
+    this.language = this.$i18n.locale.indexOf('zh') !== -1 ? 'zh-cn' : 'en';
+    this.getConfig();
   },
-  mounted() {}
-}
+  mounted() {},
+};
 </script>
 <style lang="less" scoped>
 .header-wrap {
@@ -802,7 +755,7 @@ export default {
   left: 0;
   display: flex;
   height: 102px;
-  z-index: 2001;
+  z-index: 2000;
   padding: 0 5.2%;
   margin: 0 auto;
   background: #000;
@@ -817,10 +770,12 @@ export default {
     }
   }
   .search {
+    display: none;
     opacity: 0;
     transition: opacity 0.3s ease;
     &.search-hide {
       opacity: 1;
+      display: inherit;
     }
   }
 }

@@ -14,7 +14,6 @@ export default {
     erc721Transfer: "PRC721 交易",
     erc1155Tokens: "PRC1155热门令牌",
     erc1155Transfer: "PRC1155 交易",
-
     tokenList: "令牌列表",
     more: "更多",
     comesoon: "敬请期待",
@@ -322,6 +321,7 @@ export default {
     erc20Trade: "PRC20交易",
     erc721Trade: "PRC721交易",
     erc1155Trade: "PRC1155交易",
+
     status: {
       name: "状态",
       name2: "合约状态",
@@ -593,14 +593,9 @@ export default {
     6: "已取消"
   },
   voteStatus: {
-    1: "YES",
-    2: "NO",
-    3: "ABSTAIN",
-    4: "SUPPORT",
-    11: "YES ",
-    12: "NO ",
-    13: "ABSTAIN ",
-    invalid: "(无效票)"
+    1: "支持",
+    2: "反对",
+    other: "弃权",
   },
   actionType: {
     1: "创建验证节点",
@@ -615,6 +610,7 @@ export default {
     12: "版本声明",
   },
   more: {
+    addToExtension: "Add to Extension",
     foundationAddress: '基金会地址',
     governableParameter: "可治理参数",
     stakeThreshold: "创建验证节点最低的质押LAT数。",
@@ -639,6 +635,27 @@ export default {
     zeroProduceNumberThreshold: "零出块次数处罚阈值。",
     zeroProduceFreezeDuration:
       "节点零出块惩罚被锁定时间（一个结算周期10750blocks）"
+  },
+  extension: {
+    desc: "用户可以快速添加到他们的钱包和Web3 中间件提供商（如：MetaMask）连接到正确的Chain ID 和 Network ID 以连接到正确的链；步骤：",
+    steps: ["连接...", "添加到...", "添加成功"],
+    form: {
+      rpc: "网络链接 URL",
+      chainId: "链 ID",
+      currency: "符号",
+      website: "浏览器 URL",
+      connect: "连接 MetaMask",
+      add: "添加到 MetaMask",
+    },
+    error: {
+      already: "MetaMask已存在链ID {0}",
+      noMetaMask: `未检测到MetaMask插件，请先
+        <a href="https://metamask.io" target="_black" style="color: #409eff;font-weight: bold;">安装</a>。`,
+      tips: "提示",
+      isChrome: "请使用chrome浏览器安装MetaMask进行操作。",
+      mobile: "请在PC端Chrome浏览器安装MetaMask进行操作。",
+      noChainId: "MateMask版本过低或当前非MetaMask钱包",
+    }
   },
   tips: {
     totalSupply_721: "已铸造的Token总量",

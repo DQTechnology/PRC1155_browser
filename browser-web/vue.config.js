@@ -10,7 +10,6 @@ module.exports = {
         // target: 'http://192.168.120.150:40000',
         // target: "https://scan.platon.network/",
         target: 'http://127.0.0.1:50010/',
-
         secure: false,
         ws: true,
         changeOrigin: true,
@@ -20,5 +19,5 @@ module.exports = {
       }
     }
   },
-  transpileDependencies: ['vue-particles']
+  transpileDependencies:['vue-particles']
 }

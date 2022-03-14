@@ -15,6 +15,7 @@ public enum ESKeyEnum {
     Erc721Tx("Erc721Tx"),
     Erc1155Tx("Erc1155Tx");
 
+
     private String key;
 
     ESKeyEnum(String key) {

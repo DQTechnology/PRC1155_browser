@@ -1,6 +1,7 @@
 package com.platon.browser.dao.custommapper;
 
-import com.platon.browser.dao.entity.Token721Inventory;
+import com.platon.browser.dao.entity.Token1155Inventory;
+import com.platon.browser.dao.entity.TokenInventory;
 import com.platon.browser.dao.entity.TokenHolder;
 import com.platon.browser.param.sync.*;
 import com.platon.browser.task.bean.TokenHolderNum;
@@ -52,7 +53,18 @@ public interface SyncTokenInfoMapper {
      * @date 2021/1/18
      */
     @Transactional(rollbackFor = {Exception.class, Error.class})
-    void updateTokenInventory(@Param("list") List<Token721Inventory> list);
+    void updateToken721Inventory(@Param("list") List<TokenInventory> list);
+
+    /**
+     * 更新token_inventory
+     *
+     * @param list 需要批量更新的list
+     * @return void
+     * @date 2021/1/18
+     */
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    void updateToken1155Inventory(@Param("list") List<Token1155Inventory> list);
+
 
     /**
      * 查询合约地址的用户统计数
